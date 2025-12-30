@@ -728,6 +728,37 @@ export class BlueprintAnalyzer {
 }
 
 /**
+ * Figure space (U+2007) has the same width as a digit in variable-width fonts
+ */
+const FIGURE_SPACE = "\u2007";
+
+/**
+ * Formats a rate value with left-padding using figure spaces to align decimal points.
+ * @param rate The rate value to format
+ * @param maxIntegerDigits The maximum number of integer digits for alignment
+ * @returns Formatted string like "  22.3/s" with figure space padding
+ */
+function formatRate(rate: number, maxIntegerDigits: number): string {
+  const formatted = rate.toFixed(1);
+  const [intPart] = formatted.split(".");
+  const padLength = Math.max(0, maxIntegerDigits - (intPart?.length ?? 0));
+  const padding = FIGURE_SPACE.repeat(padLength);
+  return `${padding}${formatted}/s`;
+}
+
+/**
+ * Calculates the maximum number of integer digits across all rates
+ */
+function getMaxIntegerDigits(rates: Map<string, number>): number {
+  let maxDigits = 1;
+  for (const rate of rates.values()) {
+    const intPart = Math.floor(rate).toString();
+    maxDigits = Math.max(maxDigits, intPart.length);
+  }
+  return maxDigits;
+}
+
+/**
  * Formats the analysis result for output
  */
 export function formatAnalysisResult(result: AnalysisResult): string {
@@ -738,25 +769,27 @@ export function formatAnalysisResult(result: AnalysisResult): string {
   lines.push("");
 
   // Format inputs
-  const inputParts: string[] = [];
-  for (const [item, rate] of result.externalInputs) {
-    inputParts.push(`${getDisplayName(item)} (${rate.toFixed(2)}/s)`);
-  }
-  if (inputParts.length > 0) {
-    lines.push(`Inputs: ${inputParts.join(", ")}`);
+  lines.push("Inputs");
+  if (result.externalInputs.size > 0) {
+    const maxDigits = getMaxIntegerDigits(result.externalInputs);
+    for (const [item, rate] of result.externalInputs) {
+      lines.push(`${formatRate(rate, maxDigits)} ${getDisplayName(item)}`);
+    }
   } else {
-    lines.push("Inputs: None");
+    lines.push("  None");
   }
 
+  lines.push("");
+
   // Format outputs
-  const outputParts: string[] = [];
-  for (const [item, rate] of result.externalOutputs) {
-    outputParts.push(`${getDisplayName(item)} (${rate.toFixed(2)}/s)`);
-  }
-  if (outputParts.length > 0) {
-    lines.push(`Outputs: ${outputParts.join(", ")}`);
+  lines.push("Outputs");
+  if (result.externalOutputs.size > 0) {
+    const maxDigits = getMaxIntegerDigits(result.externalOutputs);
+    for (const [item, rate] of result.externalOutputs) {
+      lines.push(`${formatRate(rate, maxDigits)} ${getDisplayName(item)}`);
+    }
   } else {
-    lines.push("Outputs: None");
+    lines.push("  None");
   }
 
   lines.push("");
