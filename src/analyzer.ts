@@ -45,6 +45,13 @@ const UTILIZATION_CHANGE_THRESHOLD = 0.0001;
 const MAX_BOTTLENECK_ITERATIONS = 30;
 
 /**
+ * Minimum threshold for reporting external flows.
+ * Net flows smaller than this are considered balanced and not reported as inputs/outputs.
+ * This avoids reporting items with negligible differences due to floating-point precision.
+ */
+const EXTERNAL_FLOW_THRESHOLD = 0.0001;
+
+/**
  * Calculates distance between two positions
  */
 function distance(p1: Position, p2: Position): number {
@@ -451,16 +458,17 @@ export class BlueprintAnalyzer {
       // Apply utilization to flows
       const adjustedConsumed = flow.consumed;
       const adjustedProduced = flow.produced;
+      const netFlow = adjustedProduced - adjustedConsumed;
 
-      if (adjustedConsumed > adjustedProduced) {
+      // Only report flows that exceed the threshold to avoid floating-point noise
+      if (netFlow < -EXTERNAL_FLOW_THRESHOLD) {
         // Net consumption - this is an external input
-        const netInput = adjustedConsumed - adjustedProduced;
-        inputs.set(item, netInput);
-      } else if (adjustedProduced > adjustedConsumed) {
+        inputs.set(item, -netFlow);
+      } else if (netFlow > EXTERNAL_FLOW_THRESHOLD) {
         // Net production - this is an external output
-        const netOutput = adjustedProduced - adjustedConsumed;
-        outputs.set(item, netOutput);
+        outputs.set(item, netFlow);
       }
+      // Items with |netFlow| <= threshold are considered balanced and not reported
     }
 
     return { inputs, outputs };
