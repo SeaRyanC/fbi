@@ -84,8 +84,17 @@ function main(): void {
     const blueprint = blueprints[i];
     if (!blueprint) continue;
 
+    const blueprintName = blueprint.label || `Blueprint ${i + 1}`;
+
+    // Print sub-blueprint name when processing a blueprint book
+    if (blueprints.length > 1) {
+      console.log(`Processing: ${blueprintName}`);
+    }
+
     const displayName =
-      blueprints.length > 1 ? `${filename} (Blueprint ${i + 1})` : filename;
+      blueprints.length > 1
+        ? blueprintName
+        : blueprint.label || filename;
 
     try {
       const analyzer = new BlueprintAnalyzer(blueprint);

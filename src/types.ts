@@ -11,6 +11,7 @@ export interface BlueprintString {
 export interface BlueprintBook {
   blueprints: Array<{ blueprint: Blueprint; index: number }>;
   item: "blueprint-book";
+  label?: string;
   active_index?: number;
   version: number;
 }
@@ -21,6 +22,7 @@ export interface Blueprint {
   tiles?: BlueprintTile[];
   wires?: number[][];
   item: "blueprint";
+  label?: string;
   version: number;
 }
 
