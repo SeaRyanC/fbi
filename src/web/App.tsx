@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { useState, useMemo } from "preact/hooks";
+import { useState, useMemo, useEffect } from "preact/hooks";
 import { decodeBlueprint, encodeBlueprint, buildBlueprintTree, type BlueprintTreeNode } from "./browserDecoder.js";
 import { BlueprintAnalyzer } from "../analyzer.js";
 import { getDisplayName } from "../gameData.js";
@@ -179,6 +179,28 @@ function AnalysisDisplay({ result }: { result: AnalysisResult }) {
   );
 }
 
+/**
+ * Find the first blueprint in the tree and return it with its path
+ */
+function findFirstBlueprint(nodes: BlueprintTreeNode[], currentPath: number[] = []): { blueprint: Blueprint; path: number[] } | null {
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i]!;
+    const nodePath = [...currentPath, i];
+    
+    if (node.type === "blueprint" && node.blueprint) {
+      return { blueprint: node.blueprint, path: nodePath };
+    }
+    
+    if (node.type === "book" && node.children) {
+      const result = findFirstBlueprint(node.children, nodePath);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return null;
+}
+
 export function App() {
   const [state, setState] = useState<AppState>({
     blueprintInput: "",
@@ -204,6 +226,35 @@ export function App() {
       return { decoded: null, tree: [], parseError: e instanceof Error ? e.message : String(e) };
     }
   }, [state.blueprintInput]);
+
+  // Auto-select first blueprint when tree changes
+  useEffect(() => {
+    if (tree.length > 0) {
+      const first = findFirstBlueprint(tree);
+      if (first) {
+        try {
+          const analyzer = new BlueprintAnalyzer(first.blueprint);
+          const result = analyzer.analyze(first.blueprint.label || "Selected Blueprint");
+          result.blueprintName = first.blueprint.label;
+          setState(prev => ({
+            ...prev,
+            selectedBlueprint: first.blueprint,
+            selectedPath: first.path,
+            analysisResult: result,
+            error: null,
+          }));
+        } catch (e) {
+          setState(prev => ({
+            ...prev,
+            selectedBlueprint: first.blueprint,
+            selectedPath: first.path,
+            analysisResult: null,
+            error: e instanceof Error ? e.message : String(e),
+          }));
+        }
+      }
+    }
+  }, [tree]);
 
   // Auto-select first blueprint when input changes
   const handleInputChange = (value: string) => {
