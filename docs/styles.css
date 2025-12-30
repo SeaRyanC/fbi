@@ -1,0 +1,327 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-tertiary: #0f3460;
+  --text-primary: #e8e8e8;
+  --text-secondary: #a0a0a0;
+  --accent-primary: #e94560;
+  --accent-secondary: #0f4c75;
+  --input-rate: #ff6b6b;
+  --output-rate: #51cf66;
+  --border-color: #2a2a4a;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  padding: 20px 0 40px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 30px;
+}
+
+header h1 {
+  margin: 0 0 10px;
+  font-size: 2.5rem;
+  color: var(--text-primary);
+}
+
+header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+section {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+}
+
+section h2 {
+  margin: 0 0 16px;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent-primary);
+  padding-bottom: 8px;
+}
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  font-family: "Fira Code", "Consolas", monospace;
+  font-size: 13px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  resize: vertical;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.error-message {
+  background: #5c2030;
+  color: #ff8a8a;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+/* Blueprint Tree */
+.blueprint-tree {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tree-node {
+  margin: 4px 0;
+}
+
+.book-icon, .blueprint-icon {
+  margin-right: 8px;
+}
+
+.book-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.blueprint-button {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.blueprint-button:hover {
+  background: var(--accent-secondary);
+  border-color: var(--accent-primary);
+}
+
+.blueprint-button.selected {
+  background: var(--accent-secondary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3);
+}
+
+/* Analysis Result */
+.analysis-result h3 {
+  margin: 0 0 20px;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.flow-section {
+  margin-bottom: 24px;
+}
+
+.flow-section h4 {
+  margin: 0 0 12px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.flow-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.flow-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.flow-item .rate {
+  font-family: "Fira Code", "Consolas", monospace;
+  font-weight: 600;
+  min-width: 80px;
+}
+
+.flow-item.input .rate {
+  color: var(--input-rate);
+}
+
+.flow-item.output .rate {
+  color: var(--output-rate);
+}
+
+.flow-item .item-name {
+  color: var(--text-primary);
+}
+
+.empty-message {
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0;
+}
+
+/* Utilization */
+.utilization-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.utilization-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.utilization-item .machine-name {
+  flex: 1;
+  font-size: 14px;
+}
+
+.utilization-bar {
+  width: 120px;
+  height: 8px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.utilization-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--output-rate));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.utilization-percent {
+  font-family: "Fira Code", "Consolas", monospace;
+  min-width: 45px;
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+/* Options */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.options label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.options input[type="checkbox"] {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent-primary);
+}
+
+/* Output Blueprint */
+.output-blueprint {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.output-blueprint h3 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.copy-button {
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.copy-button:hover {
+  background: #d63b55;
+}
+
+footer {
+  text-align: center;
+  padding: 30px 0;
+  margin-top: 40px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app {
+    padding: 12px;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  section {
+    padding: 16px;
+  }
+
+  .utilization-item {
+    flex-wrap: wrap;
+  }
+
+  .utilization-bar {
+    width: 100%;
+    order: 3;
+  }
+}
