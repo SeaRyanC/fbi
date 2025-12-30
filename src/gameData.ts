@@ -1171,7 +1171,7 @@ export const RECIPES: Map<string, Recipe> = new Map([
       internalName: "productivity-module-3",
       craftingTime: 60,
       ingredients: [
-        { name: "productivity-module-3", amount: 4, type: "item" },
+        { name: "productivity-module-2", amount: 4, type: "item" },
         { name: "advanced-circuit", amount: 5, type: "item" },
         { name: "processing-unit", amount: 5, type: "item" },
       ],
@@ -1218,7 +1218,7 @@ export const RECIPES: Map<string, Recipe> = new Map([
       internalName: "efficiency-module-3",
       craftingTime: 60,
       ingredients: [
-        { name: "efficiency-module-3", amount: 4, type: "item" },
+        { name: "efficiency-module-2", amount: 4, type: "item" },
         { name: "advanced-circuit", amount: 5, type: "item" },
         { name: "processing-unit", amount: 5, type: "item" },
       ],
