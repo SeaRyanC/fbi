@@ -227,49 +227,8 @@ export function App() {
     }
   }, [state.blueprintInput]);
 
-  // Auto-select first blueprint when tree changes
-  useEffect(() => {
-    if (tree.length > 0) {
-      const first = findFirstBlueprint(tree);
-      if (first) {
-        try {
-          const analyzer = new BlueprintAnalyzer(first.blueprint);
-          const result = analyzer.analyze(first.blueprint.label || "Selected Blueprint");
-          result.blueprintName = first.blueprint.label;
-          setState(prev => ({
-            ...prev,
-            selectedBlueprint: first.blueprint,
-            selectedPath: first.path,
-            analysisResult: result,
-            error: null,
-          }));
-        } catch (e) {
-          setState(prev => ({
-            ...prev,
-            selectedBlueprint: first.blueprint,
-            selectedPath: first.path,
-            analysisResult: null,
-            error: e instanceof Error ? e.message : String(e),
-          }));
-        }
-      }
-    }
-  }, [tree]);
-
-  // Auto-select first blueprint when input changes
-  const handleInputChange = (value: string) => {
-    setState(prev => ({
-      ...prev,
-      blueprintInput: value,
-      selectedBlueprint: null,
-      selectedPath: [],
-      analysisResult: null,
-      error: null,
-    }));
-  };
-
-  // Analyze selected blueprint
-  const handleBlueprintSelect = (blueprint: Blueprint, path: number[]) => {
+  // Analyze and select a blueprint
+  const selectBlueprint = (blueprint: Blueprint, path: number[]) => {
     try {
       const analyzer = new BlueprintAnalyzer(blueprint);
       const result = analyzer.analyze(blueprint.label || "Selected Blueprint");
@@ -290,6 +249,33 @@ export function App() {
         error: e instanceof Error ? e.message : String(e),
       }));
     }
+  };
+
+  // Auto-select first blueprint when tree changes
+  useEffect(() => {
+    if (tree.length > 0) {
+      const first = findFirstBlueprint(tree);
+      if (first) {
+        selectBlueprint(first.blueprint, first.path);
+      }
+    }
+  }, [tree]);
+
+  // Handle input change
+  const handleInputChange = (value: string) => {
+    setState(prev => ({
+      ...prev,
+      blueprintInput: value,
+      selectedBlueprint: null,
+      selectedPath: [],
+      analysisResult: null,
+      error: null,
+    }));
+  };
+
+  // Handle blueprint selection from tree
+  const handleBlueprintSelect = (blueprint: Blueprint, path: number[]) => {
+    selectBlueprint(blueprint, path);
   };
 
   // Generate modified blueprint string
