@@ -651,6 +651,1479 @@ export const RECIPES: Map<string, Recipe> = new Map([
       allowProductivity: true,
     },
   ],
+  // Advanced circuits
+  [
+    "advanced-circuit",
+    {
+      name: "Advanced Circuit",
+      internalName: "advanced-circuit",
+      craftingTime: 6,
+      ingredients: [
+        { name: "electronic-circuit", amount: 2, type: "item" },
+        { name: "plastic-bar", amount: 2, type: "item" },
+        { name: "copper-cable", amount: 4, type: "item" },
+      ],
+      products: [{ name: "advanced-circuit", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "processing-unit",
+    {
+      name: "Processing Unit",
+      internalName: "processing-unit",
+      craftingTime: 10,
+      ingredients: [
+        { name: "electronic-circuit", amount: 20, type: "item" },
+        { name: "advanced-circuit", amount: 2, type: "item" },
+        { name: "sulfuric-acid", amount: 5, type: "fluid" },
+      ],
+      products: [{ name: "processing-unit", amount: 1, type: "item" }],
+      category: "crafting-with-fluid",
+      allowProductivity: true,
+    },
+  ],
+  // Plastics and chemicals
+  [
+    "plastic-bar",
+    {
+      name: "Plastic Bar",
+      internalName: "plastic-bar",
+      craftingTime: 1,
+      ingredients: [
+        { name: "petroleum-gas", amount: 20, type: "fluid" },
+        { name: "coal", amount: 1, type: "item" },
+      ],
+      products: [{ name: "plastic-bar", amount: 2, type: "item" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "sulfur",
+    {
+      name: "Sulfur",
+      internalName: "sulfur",
+      craftingTime: 1,
+      ingredients: [
+        { name: "water", amount: 30, type: "fluid" },
+        { name: "petroleum-gas", amount: 30, type: "fluid" },
+      ],
+      products: [{ name: "sulfur", amount: 2, type: "item" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "sulfuric-acid",
+    {
+      name: "Sulfuric Acid",
+      internalName: "sulfuric-acid",
+      craftingTime: 1,
+      ingredients: [
+        { name: "sulfur", amount: 5, type: "item" },
+        { name: "iron-plate", amount: 1, type: "item" },
+        { name: "water", amount: 100, type: "fluid" },
+      ],
+      products: [{ name: "sulfuric-acid", amount: 50, type: "fluid" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "lubricant",
+    {
+      name: "Lubricant",
+      internalName: "lubricant",
+      craftingTime: 1,
+      ingredients: [{ name: "heavy-oil", amount: 10, type: "fluid" }],
+      products: [{ name: "lubricant", amount: 10, type: "fluid" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  // Oil processing
+  [
+    "basic-oil-processing",
+    {
+      name: "Basic Oil Processing",
+      internalName: "basic-oil-processing",
+      craftingTime: 5,
+      ingredients: [{ name: "crude-oil", amount: 100, type: "fluid" }],
+      products: [{ name: "petroleum-gas", amount: 45, type: "fluid" }],
+      category: "oil-processing",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "advanced-oil-processing",
+    {
+      name: "Advanced Oil Processing",
+      internalName: "advanced-oil-processing",
+      craftingTime: 5,
+      ingredients: [
+        { name: "crude-oil", amount: 100, type: "fluid" },
+        { name: "water", amount: 50, type: "fluid" },
+      ],
+      products: [
+        { name: "heavy-oil", amount: 25, type: "fluid" },
+        { name: "light-oil", amount: 45, type: "fluid" },
+        { name: "petroleum-gas", amount: 55, type: "fluid" },
+      ],
+      category: "oil-processing",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "heavy-oil-cracking",
+    {
+      name: "Heavy Oil Cracking",
+      internalName: "heavy-oil-cracking",
+      craftingTime: 2,
+      ingredients: [
+        { name: "heavy-oil", amount: 40, type: "fluid" },
+        { name: "water", amount: 30, type: "fluid" },
+      ],
+      products: [{ name: "light-oil", amount: 30, type: "fluid" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "light-oil-cracking",
+    {
+      name: "Light Oil Cracking",
+      internalName: "light-oil-cracking",
+      craftingTime: 2,
+      ingredients: [
+        { name: "light-oil", amount: 30, type: "fluid" },
+        { name: "water", amount: 30, type: "fluid" },
+      ],
+      products: [{ name: "petroleum-gas", amount: 20, type: "fluid" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "solid-fuel-from-light-oil",
+    {
+      name: "Solid Fuel from Light Oil",
+      internalName: "solid-fuel-from-light-oil",
+      craftingTime: 2,
+      ingredients: [{ name: "light-oil", amount: 10, type: "fluid" }],
+      products: [{ name: "solid-fuel", amount: 1, type: "item" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "solid-fuel-from-petroleum-gas",
+    {
+      name: "Solid Fuel from Petroleum Gas",
+      internalName: "solid-fuel-from-petroleum-gas",
+      craftingTime: 2,
+      ingredients: [{ name: "petroleum-gas", amount: 20, type: "fluid" }],
+      products: [{ name: "solid-fuel", amount: 1, type: "item" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "solid-fuel-from-heavy-oil",
+    {
+      name: "Solid Fuel from Heavy Oil",
+      internalName: "solid-fuel-from-heavy-oil",
+      craftingTime: 2,
+      ingredients: [{ name: "heavy-oil", amount: 20, type: "fluid" }],
+      products: [{ name: "solid-fuel", amount: 1, type: "item" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "rocket-fuel",
+    {
+      name: "Rocket Fuel",
+      internalName: "rocket-fuel",
+      craftingTime: 30,
+      ingredients: [
+        { name: "solid-fuel", amount: 10, type: "item" },
+        { name: "light-oil", amount: 10, type: "fluid" },
+      ],
+      products: [{ name: "rocket-fuel", amount: 1, type: "item" }],
+      category: "crafting-with-fluid",
+      allowProductivity: true,
+    },
+  ],
+  // Science packs
+  [
+    "military-science-pack",
+    {
+      name: "Military Science Pack",
+      internalName: "military-science-pack",
+      craftingTime: 10,
+      ingredients: [
+        { name: "piercing-rounds-magazine", amount: 1, type: "item" },
+        { name: "grenade", amount: 1, type: "item" },
+        { name: "stone-wall", amount: 2, type: "item" },
+      ],
+      products: [{ name: "military-science-pack", amount: 2, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "chemical-science-pack",
+    {
+      name: "Chemical Science Pack",
+      internalName: "chemical-science-pack",
+      craftingTime: 24,
+      ingredients: [
+        { name: "engine-unit", amount: 2, type: "item" },
+        { name: "advanced-circuit", amount: 3, type: "item" },
+        { name: "sulfur", amount: 1, type: "item" },
+      ],
+      products: [{ name: "chemical-science-pack", amount: 2, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "production-science-pack",
+    {
+      name: "Production Science Pack",
+      internalName: "production-science-pack",
+      craftingTime: 21,
+      ingredients: [
+        { name: "electric-furnace", amount: 1, type: "item" },
+        { name: "productivity-module", amount: 1, type: "item" },
+        { name: "rail", amount: 30, type: "item" },
+      ],
+      products: [{ name: "production-science-pack", amount: 3, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "utility-science-pack",
+    {
+      name: "Utility Science Pack",
+      internalName: "utility-science-pack",
+      craftingTime: 21,
+      ingredients: [
+        { name: "low-density-structure", amount: 3, type: "item" },
+        { name: "processing-unit", amount: 2, type: "item" },
+        { name: "flying-robot-frame", amount: 1, type: "item" },
+      ],
+      products: [{ name: "utility-science-pack", amount: 3, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  // Robots
+  [
+    "logistic-robot",
+    {
+      name: "Logistic Robot",
+      internalName: "logistic-robot",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "flying-robot-frame", amount: 1, type: "item" },
+        { name: "advanced-circuit", amount: 2, type: "item" },
+      ],
+      products: [{ name: "logistic-robot", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "construction-robot",
+    {
+      name: "Construction Robot",
+      internalName: "construction-robot",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "flying-robot-frame", amount: 1, type: "item" },
+        { name: "electronic-circuit", amount: 2, type: "item" },
+      ],
+      products: [{ name: "construction-robot", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  // Rocket parts
+  [
+    "low-density-structure",
+    {
+      name: "Low Density Structure",
+      internalName: "low-density-structure",
+      craftingTime: 20,
+      ingredients: [
+        { name: "steel-plate", amount: 2, type: "item" },
+        { name: "copper-plate", amount: 20, type: "item" },
+        { name: "plastic-bar", amount: 5, type: "item" },
+      ],
+      products: [{ name: "low-density-structure", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "rocket-control-unit",
+    {
+      name: "Rocket Control Unit",
+      internalName: "rocket-control-unit",
+      craftingTime: 30,
+      ingredients: [
+        { name: "processing-unit", amount: 1, type: "item" },
+        { name: "speed-module", amount: 1, type: "item" },
+      ],
+      products: [{ name: "rocket-control-unit", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "rocket-part",
+    {
+      name: "Rocket Part",
+      internalName: "rocket-part",
+      craftingTime: 3,
+      ingredients: [
+        { name: "rocket-control-unit", amount: 10, type: "item" },
+        { name: "low-density-structure", amount: 10, type: "item" },
+        { name: "rocket-fuel", amount: 10, type: "item" },
+      ],
+      products: [{ name: "rocket-part", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  // Military
+  [
+    "firearm-magazine",
+    {
+      name: "Firearm Magazine",
+      internalName: "firearm-magazine",
+      craftingTime: 1,
+      ingredients: [{ name: "iron-plate", amount: 4, type: "item" }],
+      products: [{ name: "firearm-magazine", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "piercing-rounds-magazine",
+    {
+      name: "Piercing Rounds Magazine",
+      internalName: "piercing-rounds-magazine",
+      craftingTime: 3,
+      ingredients: [
+        { name: "firearm-magazine", amount: 1, type: "item" },
+        { name: "steel-plate", amount: 1, type: "item" },
+        { name: "copper-plate", amount: 5, type: "item" },
+      ],
+      products: [{ name: "piercing-rounds-magazine", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "grenade",
+    {
+      name: "Grenade",
+      internalName: "grenade",
+      craftingTime: 8,
+      ingredients: [
+        { name: "iron-plate", amount: 5, type: "item" },
+        { name: "coal", amount: 10, type: "item" },
+      ],
+      products: [{ name: "grenade", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "stone-wall",
+    {
+      name: "Stone Wall",
+      internalName: "stone-wall",
+      craftingTime: 0.5,
+      ingredients: [{ name: "stone-brick", amount: 5, type: "item" }],
+      products: [{ name: "stone-wall", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "stone-brick",
+    {
+      name: "Stone Brick",
+      internalName: "stone-brick",
+      craftingTime: 3.2,
+      ingredients: [{ name: "stone", amount: 2, type: "item" }],
+      products: [{ name: "stone-brick", amount: 1, type: "item" }],
+      category: "smelting",
+      allowProductivity: true,
+    },
+  ],
+  // Rails and trains
+  [
+    "rail",
+    {
+      name: "Rail",
+      internalName: "rail",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "stone", amount: 1, type: "item" },
+        { name: "iron-stick", amount: 1, type: "item" },
+        { name: "steel-plate", amount: 1, type: "item" },
+      ],
+      products: [{ name: "rail", amount: 2, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Modules
+  [
+    "speed-module",
+    {
+      name: "Speed Module",
+      internalName: "speed-module",
+      craftingTime: 15,
+      ingredients: [
+        { name: "electronic-circuit", amount: 5, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "speed-module", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "speed-module-2",
+    {
+      name: "Speed Module 2",
+      internalName: "speed-module-2",
+      craftingTime: 30,
+      ingredients: [
+        { name: "speed-module", amount: 4, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "processing-unit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "speed-module-2", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "speed-module-3",
+    {
+      name: "Speed Module 3",
+      internalName: "speed-module-3",
+      craftingTime: 60,
+      ingredients: [
+        { name: "speed-module-2", amount: 4, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "processing-unit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "speed-module-3", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "productivity-module",
+    {
+      name: "Productivity Module",
+      internalName: "productivity-module",
+      craftingTime: 15,
+      ingredients: [
+        { name: "electronic-circuit", amount: 5, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "productivity-module", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "productivity-module-2",
+    {
+      name: "Productivity Module 2",
+      internalName: "productivity-module-2",
+      craftingTime: 30,
+      ingredients: [
+        { name: "productivity-module", amount: 4, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "processing-unit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "productivity-module-2", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "productivity-module-3",
+    {
+      name: "Productivity Module 3",
+      internalName: "productivity-module-3",
+      craftingTime: 60,
+      ingredients: [
+        { name: "productivity-module-3", amount: 4, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "processing-unit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "productivity-module-3", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "efficiency-module",
+    {
+      name: "Efficiency Module",
+      internalName: "efficiency-module",
+      craftingTime: 15,
+      ingredients: [
+        { name: "electronic-circuit", amount: 5, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "efficiency-module", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "efficiency-module-2",
+    {
+      name: "Efficiency Module 2",
+      internalName: "efficiency-module-2",
+      craftingTime: 30,
+      ingredients: [
+        { name: "efficiency-module", amount: 4, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "processing-unit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "efficiency-module-2", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "efficiency-module-3",
+    {
+      name: "Efficiency Module 3",
+      internalName: "efficiency-module-3",
+      craftingTime: 60,
+      ingredients: [
+        { name: "efficiency-module-3", amount: 4, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "processing-unit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "efficiency-module-3", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  // Space Age - Quality modules
+  [
+    "quality-module",
+    {
+      name: "Quality Module",
+      internalName: "quality-module",
+      craftingTime: 15,
+      ingredients: [
+        { name: "electronic-circuit", amount: 5, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "quality-module", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "quality-module-2",
+    {
+      name: "Quality Module 2",
+      internalName: "quality-module-2",
+      craftingTime: 30,
+      ingredients: [
+        { name: "quality-module", amount: 4, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "processing-unit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "quality-module-2", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "quality-module-3",
+    {
+      name: "Quality Module 3",
+      internalName: "quality-module-3",
+      craftingTime: 60,
+      ingredients: [
+        { name: "quality-module-2", amount: 4, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "processing-unit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "quality-module-3", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  // Machines and buildings
+  [
+    "electric-furnace",
+    {
+      name: "Electric Furnace",
+      internalName: "electric-furnace",
+      craftingTime: 5,
+      ingredients: [
+        { name: "steel-plate", amount: 10, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "stone-brick", amount: 10, type: "item" },
+      ],
+      products: [{ name: "electric-furnace", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "assembling-machine-1",
+    {
+      name: "Assembling Machine 1",
+      internalName: "assembling-machine-1",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "electronic-circuit", amount: 3, type: "item" },
+        { name: "iron-gear-wheel", amount: 5, type: "item" },
+        { name: "iron-plate", amount: 9, type: "item" },
+      ],
+      products: [{ name: "assembling-machine-1", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "assembling-machine-2",
+    {
+      name: "Assembling Machine 2",
+      internalName: "assembling-machine-2",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "assembling-machine-1", amount: 1, type: "item" },
+        { name: "electronic-circuit", amount: 3, type: "item" },
+        { name: "iron-gear-wheel", amount: 5, type: "item" },
+        { name: "steel-plate", amount: 2, type: "item" },
+      ],
+      products: [{ name: "assembling-machine-2", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "assembling-machine-3",
+    {
+      name: "Assembling Machine 3",
+      internalName: "assembling-machine-3",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "assembling-machine-2", amount: 2, type: "item" },
+        { name: "speed-module", amount: 4, type: "item" },
+      ],
+      products: [{ name: "assembling-machine-3", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "chemical-plant",
+    {
+      name: "Chemical Plant",
+      internalName: "chemical-plant",
+      craftingTime: 5,
+      ingredients: [
+        { name: "steel-plate", amount: 5, type: "item" },
+        { name: "iron-gear-wheel", amount: 5, type: "item" },
+        { name: "electronic-circuit", amount: 5, type: "item" },
+        { name: "pipe", amount: 5, type: "item" },
+      ],
+      products: [{ name: "chemical-plant", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "oil-refinery",
+    {
+      name: "Oil Refinery",
+      internalName: "oil-refinery",
+      craftingTime: 8,
+      ingredients: [
+        { name: "steel-plate", amount: 15, type: "item" },
+        { name: "iron-gear-wheel", amount: 10, type: "item" },
+        { name: "electronic-circuit", amount: 10, type: "item" },
+        { name: "pipe", amount: 10, type: "item" },
+        { name: "stone-brick", amount: 10, type: "item" },
+      ],
+      products: [{ name: "oil-refinery", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Inserters
+  [
+    "fast-inserter",
+    {
+      name: "Fast Inserter",
+      internalName: "fast-inserter",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "electronic-circuit", amount: 2, type: "item" },
+        { name: "inserter", amount: 1, type: "item" },
+        { name: "iron-plate", amount: 2, type: "item" },
+      ],
+      products: [{ name: "fast-inserter", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "bulk-inserter",
+    {
+      name: "Bulk Inserter",
+      internalName: "bulk-inserter",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "fast-inserter", amount: 1, type: "item" },
+        { name: "iron-gear-wheel", amount: 15, type: "item" },
+        { name: "electronic-circuit", amount: 15, type: "item" },
+        { name: "advanced-circuit", amount: 1, type: "item" },
+      ],
+      products: [{ name: "bulk-inserter", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "stack-inserter",
+    {
+      name: "Stack Inserter",
+      internalName: "stack-inserter",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "bulk-inserter", amount: 1, type: "item" },
+        { name: "iron-gear-wheel", amount: 15, type: "item" },
+        { name: "processing-unit", amount: 1, type: "item" },
+      ],
+      products: [{ name: "stack-inserter", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "long-handed-inserter",
+    {
+      name: "Long Handed Inserter",
+      internalName: "long-handed-inserter",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "iron-gear-wheel", amount: 1, type: "item" },
+        { name: "iron-plate", amount: 1, type: "item" },
+        { name: "inserter", amount: 1, type: "item" },
+      ],
+      products: [{ name: "long-handed-inserter", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Belts
+  [
+    "fast-transport-belt",
+    {
+      name: "Fast Transport Belt",
+      internalName: "fast-transport-belt",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "iron-gear-wheel", amount: 5, type: "item" },
+        { name: "transport-belt", amount: 1, type: "item" },
+      ],
+      products: [{ name: "fast-transport-belt", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "express-transport-belt",
+    {
+      name: "Express Transport Belt",
+      internalName: "express-transport-belt",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "iron-gear-wheel", amount: 10, type: "item" },
+        { name: "fast-transport-belt", amount: 1, type: "item" },
+        { name: "lubricant", amount: 20, type: "fluid" },
+      ],
+      products: [{ name: "express-transport-belt", amount: 1, type: "item" }],
+      category: "crafting-with-fluid",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "turbo-transport-belt",
+    {
+      name: "Turbo Transport Belt",
+      internalName: "turbo-transport-belt",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "iron-gear-wheel", amount: 20, type: "item" },
+        { name: "express-transport-belt", amount: 1, type: "item" },
+        { name: "lubricant", amount: 20, type: "fluid" },
+      ],
+      products: [{ name: "turbo-transport-belt", amount: 1, type: "item" }],
+      category: "crafting-with-fluid",
+      allowProductivity: false,
+    },
+  ],
+  // Splitters
+  [
+    "splitter",
+    {
+      name: "Splitter",
+      internalName: "splitter",
+      craftingTime: 1,
+      ingredients: [
+        { name: "electronic-circuit", amount: 5, type: "item" },
+        { name: "iron-plate", amount: 5, type: "item" },
+        { name: "transport-belt", amount: 4, type: "item" },
+      ],
+      products: [{ name: "splitter", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "fast-splitter",
+    {
+      name: "Fast Splitter",
+      internalName: "fast-splitter",
+      craftingTime: 2,
+      ingredients: [
+        { name: "splitter", amount: 1, type: "item" },
+        { name: "iron-gear-wheel", amount: 10, type: "item" },
+        { name: "electronic-circuit", amount: 10, type: "item" },
+      ],
+      products: [{ name: "fast-splitter", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "express-splitter",
+    {
+      name: "Express Splitter",
+      internalName: "express-splitter",
+      craftingTime: 2,
+      ingredients: [
+        { name: "fast-splitter", amount: 1, type: "item" },
+        { name: "iron-gear-wheel", amount: 10, type: "item" },
+        { name: "advanced-circuit", amount: 10, type: "item" },
+        { name: "lubricant", amount: 80, type: "fluid" },
+      ],
+      products: [{ name: "express-splitter", amount: 1, type: "item" }],
+      category: "crafting-with-fluid",
+      allowProductivity: false,
+    },
+  ],
+  // Underground belts
+  [
+    "underground-belt",
+    {
+      name: "Underground Belt",
+      internalName: "underground-belt",
+      craftingTime: 1,
+      ingredients: [
+        { name: "iron-plate", amount: 10, type: "item" },
+        { name: "transport-belt", amount: 5, type: "item" },
+      ],
+      products: [{ name: "underground-belt", amount: 2, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "fast-underground-belt",
+    {
+      name: "Fast Underground Belt",
+      internalName: "fast-underground-belt",
+      craftingTime: 2,
+      ingredients: [
+        { name: "iron-gear-wheel", amount: 40, type: "item" },
+        { name: "underground-belt", amount: 2, type: "item" },
+      ],
+      products: [{ name: "fast-underground-belt", amount: 2, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "express-underground-belt",
+    {
+      name: "Express Underground Belt",
+      internalName: "express-underground-belt",
+      craftingTime: 2,
+      ingredients: [
+        { name: "iron-gear-wheel", amount: 80, type: "item" },
+        { name: "fast-underground-belt", amount: 2, type: "item" },
+        { name: "lubricant", amount: 40, type: "fluid" },
+      ],
+      products: [{ name: "express-underground-belt", amount: 2, type: "item" }],
+      category: "crafting-with-fluid",
+      allowProductivity: false,
+    },
+  ],
+  // Power
+  [
+    "solar-panel",
+    {
+      name: "Solar Panel",
+      internalName: "solar-panel",
+      craftingTime: 10,
+      ingredients: [
+        { name: "steel-plate", amount: 5, type: "item" },
+        { name: "electronic-circuit", amount: 15, type: "item" },
+        { name: "copper-plate", amount: 5, type: "item" },
+      ],
+      products: [{ name: "solar-panel", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "accumulator",
+    {
+      name: "Accumulator",
+      internalName: "accumulator",
+      craftingTime: 10,
+      ingredients: [
+        { name: "iron-plate", amount: 2, type: "item" },
+        { name: "battery", amount: 5, type: "item" },
+      ],
+      products: [{ name: "accumulator", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Electric poles
+  [
+    "small-electric-pole",
+    {
+      name: "Small Electric Pole",
+      internalName: "small-electric-pole",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "wood", amount: 1, type: "item" },
+        { name: "copper-cable", amount: 2, type: "item" },
+      ],
+      products: [{ name: "small-electric-pole", amount: 2, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "medium-electric-pole",
+    {
+      name: "Medium Electric Pole",
+      internalName: "medium-electric-pole",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "steel-plate", amount: 2, type: "item" },
+        { name: "copper-cable", amount: 2, type: "item" },
+      ],
+      products: [{ name: "medium-electric-pole", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "big-electric-pole",
+    {
+      name: "Big Electric Pole",
+      internalName: "big-electric-pole",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "steel-plate", amount: 5, type: "item" },
+        { name: "copper-cable", amount: 5, type: "item" },
+      ],
+      products: [{ name: "big-electric-pole", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "substation",
+    {
+      name: "Substation",
+      internalName: "substation",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "steel-plate", amount: 10, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+        { name: "copper-cable", amount: 5, type: "item" },
+      ],
+      products: [{ name: "substation", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Pipes
+  [
+    "pipe-to-ground",
+    {
+      name: "Pipe to Ground",
+      internalName: "pipe-to-ground",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "pipe", amount: 10, type: "item" },
+        { name: "iron-plate", amount: 5, type: "item" },
+      ],
+      products: [{ name: "pipe-to-ground", amount: 2, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "pump",
+    {
+      name: "Pump",
+      internalName: "pump",
+      craftingTime: 2,
+      ingredients: [
+        { name: "engine-unit", amount: 1, type: "item" },
+        { name: "steel-plate", amount: 1, type: "item" },
+        { name: "pipe", amount: 1, type: "item" },
+      ],
+      products: [{ name: "pump", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "storage-tank",
+    {
+      name: "Storage Tank",
+      internalName: "storage-tank",
+      craftingTime: 3,
+      ingredients: [
+        { name: "iron-plate", amount: 20, type: "item" },
+        { name: "steel-plate", amount: 5, type: "item" },
+      ],
+      products: [{ name: "storage-tank", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Logistics
+  [
+    "roboport",
+    {
+      name: "Roboport",
+      internalName: "roboport",
+      craftingTime: 5,
+      ingredients: [
+        { name: "steel-plate", amount: 45, type: "item" },
+        { name: "iron-gear-wheel", amount: 45, type: "item" },
+        { name: "advanced-circuit", amount: 45, type: "item" },
+      ],
+      products: [{ name: "roboport", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Chests
+  [
+    "wooden-chest",
+    {
+      name: "Wooden Chest",
+      internalName: "wooden-chest",
+      craftingTime: 0.5,
+      ingredients: [{ name: "wood", amount: 2, type: "item" }],
+      products: [{ name: "wooden-chest", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "iron-chest",
+    {
+      name: "Iron Chest",
+      internalName: "iron-chest",
+      craftingTime: 0.5,
+      ingredients: [{ name: "iron-plate", amount: 8, type: "item" }],
+      products: [{ name: "iron-chest", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "steel-chest",
+    {
+      name: "Steel Chest",
+      internalName: "steel-chest",
+      craftingTime: 0.5,
+      ingredients: [{ name: "steel-plate", amount: 8, type: "item" }],
+      products: [{ name: "steel-chest", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Explosives
+  [
+    "explosives",
+    {
+      name: "Explosives",
+      internalName: "explosives",
+      craftingTime: 4,
+      ingredients: [
+        { name: "sulfur", amount: 1, type: "item" },
+        { name: "coal", amount: 1, type: "item" },
+        { name: "water", amount: 10, type: "fluid" },
+      ],
+      products: [{ name: "explosives", amount: 2, type: "item" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  // Uranium processing
+  [
+    "uranium-processing",
+    {
+      name: "Uranium Processing",
+      internalName: "uranium-processing",
+      craftingTime: 12,
+      ingredients: [{ name: "uranium-ore", amount: 10, type: "item" }],
+      products: [
+        { name: "uranium-235", amount: 1, type: "item", probability: 0.007 },
+        { name: "uranium-238", amount: 1, type: "item", probability: 0.993 },
+      ],
+      category: "centrifuging",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "kovarex-enrichment-process",
+    {
+      name: "Kovarex Enrichment Process",
+      internalName: "kovarex-enrichment-process",
+      craftingTime: 60,
+      ingredients: [
+        { name: "uranium-235", amount: 40, type: "item" },
+        { name: "uranium-238", amount: 5, type: "item" },
+      ],
+      products: [
+        { name: "uranium-235", amount: 41, type: "item" },
+        { name: "uranium-238", amount: 2, type: "item" },
+      ],
+      category: "centrifuging",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "uranium-fuel-cell",
+    {
+      name: "Uranium Fuel Cell",
+      internalName: "uranium-fuel-cell",
+      craftingTime: 10,
+      ingredients: [
+        { name: "iron-plate", amount: 10, type: "item" },
+        { name: "uranium-235", amount: 1, type: "item" },
+        { name: "uranium-238", amount: 19, type: "item" },
+      ],
+      products: [{ name: "uranium-fuel-cell", amount: 10, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
+  // Space Age specific recipes
+  [
+    "superconductor",
+    {
+      name: "Superconductor",
+      internalName: "superconductor",
+      craftingTime: 5,
+      ingredients: [
+        { name: "copper-plate", amount: 1, type: "item" },
+        { name: "plastic-bar", amount: 1, type: "item" },
+        { name: "iron-plate", amount: 1, type: "item" },
+        { name: "light-oil", amount: 5, type: "fluid" },
+      ],
+      products: [{ name: "superconductor", amount: 2, type: "item" }],
+      category: "electromagnetics",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "supercapacitor",
+    {
+      name: "Supercapacitor",
+      internalName: "supercapacitor",
+      craftingTime: 10,
+      ingredients: [
+        { name: "battery", amount: 1, type: "item" },
+        { name: "electronic-circuit", amount: 4, type: "item" },
+        { name: "superconductor", amount: 2, type: "item" },
+        { name: "holmium-plate", amount: 2, type: "item" },
+      ],
+      products: [{ name: "supercapacitor", amount: 1, type: "item" }],
+      category: "electromagnetics",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "holmium-plate",
+    {
+      name: "Holmium Plate",
+      internalName: "holmium-plate",
+      craftingTime: 1,
+      ingredients: [
+        { name: "holmium-ore", amount: 2, type: "item" },
+        { name: "stone", amount: 1, type: "item" },
+      ],
+      products: [{ name: "holmium-plate", amount: 1, type: "item" }],
+      category: "electromagnetics",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "electrolyte",
+    {
+      name: "Electrolyte",
+      internalName: "electrolyte",
+      craftingTime: 2,
+      ingredients: [
+        { name: "holmium-ore", amount: 1, type: "item" },
+        { name: "stone", amount: 1, type: "item" },
+        { name: "heavy-oil", amount: 10, type: "fluid" },
+      ],
+      products: [{ name: "electrolyte", amount: 10, type: "fluid" }],
+      category: "electromagnetics",
+      allowProductivity: true,
+    },
+  ],
+  // Space platform recipes
+  [
+    "space-platform-foundation",
+    {
+      name: "Space Platform Foundation",
+      internalName: "space-platform-foundation",
+      craftingTime: 10,
+      ingredients: [
+        { name: "steel-plate", amount: 10, type: "item" },
+        { name: "copper-cable", amount: 10, type: "item" },
+      ],
+      products: [{ name: "space-platform-foundation", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "cargo-bay",
+    {
+      name: "Cargo Bay",
+      internalName: "cargo-bay",
+      craftingTime: 10,
+      ingredients: [
+        { name: "steel-plate", amount: 20, type: "item" },
+        { name: "low-density-structure", amount: 1, type: "item" },
+        { name: "advanced-circuit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "cargo-bay", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "asteroid-collector",
+    {
+      name: "Asteroid Collector",
+      internalName: "asteroid-collector",
+      craftingTime: 20,
+      ingredients: [
+        { name: "steel-plate", amount: 10, type: "item" },
+        { name: "electronic-circuit", amount: 10, type: "item" },
+        { name: "engine-unit", amount: 5, type: "item" },
+      ],
+      products: [{ name: "asteroid-collector", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "thruster",
+    {
+      name: "Thruster",
+      internalName: "thruster",
+      craftingTime: 30,
+      ingredients: [
+        { name: "steel-plate", amount: 10, type: "item" },
+        { name: "engine-unit", amount: 10, type: "item" },
+        { name: "pipe", amount: 20, type: "item" },
+      ],
+      products: [{ name: "thruster", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Asteroid recipes
+  [
+    "metallic-asteroid-crushing",
+    {
+      name: "Metallic Asteroid Crushing",
+      internalName: "metallic-asteroid-crushing",
+      craftingTime: 2,
+      ingredients: [{ name: "metallic-asteroid-chunk", amount: 1, type: "item" }],
+      products: [
+        { name: "iron-ore", amount: 20, type: "item" },
+        { name: "copper-ore", amount: 6, type: "item", probability: 0.8 },
+      ],
+      category: "crushing",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "carbonic-asteroid-crushing",
+    {
+      name: "Carbonic Asteroid Crushing",
+      internalName: "carbonic-asteroid-crushing",
+      craftingTime: 2,
+      ingredients: [{ name: "carbonic-asteroid-chunk", amount: 1, type: "item" }],
+      products: [
+        { name: "carbon", amount: 10, type: "item" },
+        { name: "sulfur", amount: 2, type: "item", probability: 0.5 },
+      ],
+      category: "crushing",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "oxide-asteroid-crushing",
+    {
+      name: "Oxide Asteroid Crushing",
+      internalName: "oxide-asteroid-crushing",
+      craftingTime: 2,
+      ingredients: [{ name: "oxide-asteroid-chunk", amount: 1, type: "item" }],
+      products: [
+        { name: "ice", amount: 5, type: "item" },
+        { name: "calcite", amount: 2, type: "item", probability: 0.4 },
+      ],
+      category: "crushing",
+      allowProductivity: true,
+    },
+  ],
+  // Ice processing
+  [
+    "ice-melting",
+    {
+      name: "Ice Melting",
+      internalName: "ice-melting",
+      craftingTime: 1,
+      ingredients: [{ name: "ice", amount: 1, type: "item" }],
+      products: [
+        { name: "water", amount: 20, type: "fluid" },
+      ],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  // Carbon recipes
+  [
+    "carbon",
+    {
+      name: "Carbon",
+      internalName: "carbon",
+      craftingTime: 1,
+      ingredients: [
+        { name: "coal", amount: 2, type: "item" },
+        { name: "sulfuric-acid", amount: 20, type: "fluid" },
+      ],
+      products: [{ name: "carbon", amount: 1, type: "item" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "carbon-fiber",
+    {
+      name: "Carbon Fiber",
+      internalName: "carbon-fiber",
+      craftingTime: 2,
+      ingredients: [
+        { name: "carbon", amount: 4, type: "item" },
+        { name: "heavy-oil", amount: 4, type: "fluid" },
+      ],
+      products: [{ name: "carbon-fiber", amount: 1, type: "item" }],
+      category: "crafting-with-fluid",
+      allowProductivity: true,
+    },
+  ],
+  // Beacon
+  [
+    "beacon",
+    {
+      name: "Beacon",
+      internalName: "beacon",
+      craftingTime: 15,
+      ingredients: [
+        { name: "electronic-circuit", amount: 20, type: "item" },
+        { name: "advanced-circuit", amount: 20, type: "item" },
+        { name: "steel-plate", amount: 10, type: "item" },
+        { name: "copper-cable", amount: 10, type: "item" },
+      ],
+      products: [{ name: "beacon", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  // Satellite
+  [
+    "satellite",
+    {
+      name: "Satellite",
+      internalName: "satellite",
+      craftingTime: 5,
+      ingredients: [
+        { name: "low-density-structure", amount: 100, type: "item" },
+        { name: "solar-panel", amount: 100, type: "item" },
+        { name: "accumulator", amount: 100, type: "item" },
+        { name: "radar", amount: 5, type: "item" },
+        { name: "processing-unit", amount: 100, type: "item" },
+        { name: "rocket-fuel", amount: 50, type: "item" },
+      ],
+      products: [{ name: "satellite", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
+  [
+    "radar",
+    {
+      name: "Radar",
+      internalName: "radar",
+      craftingTime: 0.5,
+      ingredients: [
+        { name: "electronic-circuit", amount: 5, type: "item" },
+        { name: "iron-gear-wheel", amount: 5, type: "item" },
+        { name: "iron-plate", amount: 10, type: "item" },
+      ],
+      products: [{ name: "radar", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: false,
+    },
+  ],
 ]);
 
 /**
