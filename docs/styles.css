@@ -234,6 +234,7 @@ textarea:focus {
   font-family: "Fira Code", "Consolas", monospace;
   font-weight: 600;
   min-width: 80px;
+  text-align: right;
 }
 
 .flow-item.input .rate {
