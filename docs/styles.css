@@ -91,6 +91,66 @@ textarea:focus {
   font-size: 14px;
 }
 
+/* Split Layout for blueprint list and details */
+.split-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.split-layout .blueprints-section {
+  flex: 0 0 350px;
+  max-width: 350px;
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+}
+
+.blueprint-list-container {
+  overflow-y: auto;
+  max-height: calc(100vh - 140px);
+  padding-right: 8px;
+}
+
+.blueprint-list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.blueprint-list-container::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+}
+
+.blueprint-list-container::-webkit-scrollbar-thumb {
+  background: var(--accent-secondary);
+  border-radius: 4px;
+}
+
+.blueprint-list-container::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+.details-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.empty-details {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  border: 1px dashed var(--border-color);
+}
+
+.empty-details p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
 /* Blueprint Tree */
 .blueprint-tree {
   list-style: none;
@@ -303,6 +363,28 @@ footer {
 }
 
 /* Responsive */
+@media (max-width: 900px) {
+  .split-layout {
+    flex-direction: column;
+  }
+
+  .split-layout .blueprints-section {
+    flex: none;
+    max-width: 100%;
+    width: 100%;
+    position: static;
+    max-height: none;
+  }
+
+  .blueprint-list-container {
+    max-height: 300px;
+  }
+
+  .details-panel {
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .app {
     padding: 12px;

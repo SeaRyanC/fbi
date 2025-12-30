@@ -334,83 +334,95 @@ export function App() {
         </section>
 
         {tree.length > 0 && (
-          <section class="blueprints-section">
-            <h2>Blueprints</h2>
-            <BlueprintTreeView 
-              nodes={tree} 
-              onSelect={handleBlueprintSelect}
-              selectedPath={state.selectedPath}
-            />
-          </section>
-        )}
-
-        {state.error && <div class="error-message">{state.error}</div>}
-
-        {state.analysisResult && (
-          <section class="analysis-section">
-            <AnalysisDisplay result={state.analysisResult} />
-          </section>
-        )}
-
-        {state.analysisResult && (
-          <section class="output-section">
-            <h2>Output Options</h2>
-            <div class="options">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={state.overwriteName}
-                  onChange={(e) => setState(prev => ({
-                    ...prev,
-                    overwriteName: (e.target as HTMLInputElement).checked
-                  }))}
+          <div class="split-layout">
+            <section class="blueprints-section">
+              <h2>Blueprints</h2>
+              <div class="blueprint-list-container">
+                <BlueprintTreeView 
+                  nodes={tree} 
+                  onSelect={handleBlueprintSelect}
+                  selectedPath={state.selectedPath}
                 />
-                Overwrite Name (sets name to throughput rate, e.g. "32.4 Iron Gear Wheel /s")
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={state.overwriteDescription}
-                  onChange={(e) => setState(prev => ({
-                    ...prev,
-                    overwriteDescription: (e.target as HTMLInputElement).checked,
-                    appendDescription: false
-                  }))}
-                />
-                Overwrite Description (replaces description with input/output rates)
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={state.appendDescription}
-                  onChange={(e) => setState(prev => ({
-                    ...prev,
-                    appendDescription: (e.target as HTMLInputElement).checked,
-                    overwriteDescription: false
-                  }))}
-                />
-                Append Description (adds input/output rates to existing description)
-              </label>
-            </div>
-
-            {modifiedBlueprint && (
-              <div class="output-blueprint">
-                <h3>Modified Blueprint String</h3>
-                <textarea
-                  value={modifiedBlueprint}
-                  readOnly
-                  rows={4}
-                  onClick={(e) => (e.target as HTMLTextAreaElement).select()}
-                />
-                <button 
-                  class="copy-button"
-                  onClick={() => navigator.clipboard.writeText(modifiedBlueprint)}
-                >
-                  📋 Copy to Clipboard
-                </button>
               </div>
-            )}
-          </section>
+            </section>
+
+            <div class="details-panel">
+              {state.error && <div class="error-message">{state.error}</div>}
+
+              {state.analysisResult && (
+                <section class="analysis-section">
+                  <AnalysisDisplay result={state.analysisResult} />
+                </section>
+              )}
+
+              {state.analysisResult && (
+                <section class="output-section">
+                  <h2>Output Options</h2>
+                  <div class="options">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={state.overwriteName}
+                        onChange={(e) => setState(prev => ({
+                          ...prev,
+                          overwriteName: (e.target as HTMLInputElement).checked
+                        }))}
+                      />
+                      Overwrite Name (sets name to throughput rate, e.g. "32.4 Iron Gear Wheel /s")
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={state.overwriteDescription}
+                        onChange={(e) => setState(prev => ({
+                          ...prev,
+                          overwriteDescription: (e.target as HTMLInputElement).checked,
+                          appendDescription: false
+                          }))}
+                      />
+                      Overwrite Description (replaces description with input/output rates)
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={state.appendDescription}
+                        onChange={(e) => setState(prev => ({
+                          ...prev,
+                          appendDescription: (e.target as HTMLInputElement).checked,
+                          overwriteDescription: false
+                        }))}
+                      />
+                      Append Description (adds input/output rates to existing description)
+                    </label>
+                  </div>
+
+                  {modifiedBlueprint && (
+                    <div class="output-blueprint">
+                      <h3>Modified Blueprint String</h3>
+                      <textarea
+                        value={modifiedBlueprint}
+                        readOnly
+                        rows={4}
+                        onClick={(e) => (e.target as HTMLTextAreaElement).select()}
+                      />
+                      <button 
+                        class="copy-button"
+                        onClick={() => navigator.clipboard.writeText(modifiedBlueprint)}
+                      >
+                        📋 Copy to Clipboard
+                      </button>
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {!state.analysisResult && !state.error && (
+                <div class="empty-details">
+                  <p>Select a blueprint from the list to see its analysis</p>
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </main>
 
