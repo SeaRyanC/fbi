@@ -23,6 +23,7 @@ export interface Blueprint {
   wires?: number[][];
   item: "blueprint";
   label?: string;
+  description?: string;
   version: number;
 }
 

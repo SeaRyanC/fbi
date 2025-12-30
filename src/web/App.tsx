@@ -8,6 +8,7 @@ import type { Blueprint, BlueprintString, AnalysisResult } from "../types.js";
 interface AppState {
   blueprintInput: string;
   selectedBlueprint: Blueprint | null;
+  selectedPath: number[];  // Path to the selected blueprint in the tree (array of indices)
   analysisResult: AnalysisResult | null;
   error: string | null;
   overwriteName: boolean;
@@ -68,42 +69,49 @@ function generateRatesDescription(result: AnalysisResult): string {
 function BlueprintTreeView({ 
   nodes, 
   onSelect, 
-  selectedBlueprint,
-  depth = 0 
+  selectedPath,
+  currentPath = []
 }: { 
   nodes: BlueprintTreeNode[]; 
-  onSelect: (bp: Blueprint) => void;
-  selectedBlueprint: Blueprint | null;
-  depth?: number;
+  onSelect: (bp: Blueprint, path: number[]) => void;
+  selectedPath: number[];
+  currentPath?: number[];
 }) {
+  const depth = currentPath.length;
   return (
     <ul class="blueprint-tree" style={{ marginLeft: depth > 0 ? "16px" : "0" }}>
-      {nodes.map((node, idx) => (
-        <li key={idx} class={`tree-node ${node.type}`}>
-          {node.type === "book" ? (
-            <div>
-              <span class="book-icon">📘</span>
-              <span class="book-label">{node.label}</span>
-              {node.children && (
-                <BlueprintTreeView 
-                  nodes={node.children} 
-                  onSelect={onSelect}
-                  selectedBlueprint={selectedBlueprint}
-                  depth={depth + 1} 
-                />
-              )}
-            </div>
-          ) : (
-            <button
-              class={`blueprint-button ${selectedBlueprint === node.blueprint ? "selected" : ""}`}
-              onClick={() => node.blueprint && onSelect(node.blueprint)}
-            >
-              <span class="blueprint-icon">📋</span>
-              {node.label}
-            </button>
-          )}
-        </li>
-      ))}
+      {nodes.map((node, idx) => {
+        const nodePath = [...currentPath, idx];
+        const isSelected = selectedPath.length === nodePath.length && 
+          selectedPath.every((v, i) => v === nodePath[i]);
+        
+        return (
+          <li key={idx} class={`tree-node ${node.type}`}>
+            {node.type === "book" ? (
+              <div>
+                <span class="book-icon">📘</span>
+                <span class="book-label">{node.label}</span>
+                {node.children && (
+                  <BlueprintTreeView 
+                    nodes={node.children} 
+                    onSelect={onSelect}
+                    selectedPath={selectedPath}
+                    currentPath={nodePath}
+                  />
+                )}
+              </div>
+            ) : (
+              <button
+                class={`blueprint-button ${isSelected ? "selected" : ""}`}
+                onClick={() => node.blueprint && onSelect(node.blueprint, nodePath)}
+              >
+                <span class="blueprint-icon">📋</span>
+                {node.label}
+              </button>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -175,6 +183,7 @@ export function App() {
   const [state, setState] = useState<AppState>({
     blueprintInput: "",
     selectedBlueprint: null,
+    selectedPath: [],
     analysisResult: null,
     error: null,
     overwriteName: false,
@@ -202,13 +211,14 @@ export function App() {
       ...prev,
       blueprintInput: value,
       selectedBlueprint: null,
+      selectedPath: [],
       analysisResult: null,
       error: null,
     }));
   };
 
   // Analyze selected blueprint
-  const handleBlueprintSelect = (blueprint: Blueprint) => {
+  const handleBlueprintSelect = (blueprint: Blueprint, path: number[]) => {
     try {
       const analyzer = new BlueprintAnalyzer(blueprint);
       const result = analyzer.analyze(blueprint.label || "Selected Blueprint");
@@ -216,6 +226,7 @@ export function App() {
       setState(prev => ({
         ...prev,
         selectedBlueprint: blueprint,
+        selectedPath: path,
         analysisResult: result,
         error: null,
       }));
@@ -223,6 +234,7 @@ export function App() {
       setState(prev => ({
         ...prev,
         selectedBlueprint: blueprint,
+        selectedPath: path,
         analysisResult: null,
         error: e instanceof Error ? e.message : String(e),
       }));
@@ -231,61 +243,63 @@ export function App() {
 
   // Generate modified blueprint string
   const modifiedBlueprint = useMemo(() => {
-    if (!decoded || !state.analysisResult || !state.selectedBlueprint) {
+    if (!decoded || !state.analysisResult || !state.selectedBlueprint || state.selectedPath.length === 0) {
       return "";
     }
 
     // Deep clone the decoded data
     const modified: BlueprintString = JSON.parse(JSON.stringify(decoded));
     
-    // Find and modify the selected blueprint in the tree
-    const modifyBlueprint = (bp: Blueprint): boolean => {
-      // Match by comparing entities (or label if available)
-      if (bp === state.selectedBlueprint || 
-          (bp.label === state.selectedBlueprint?.label && bp.entities.length === state.selectedBlueprint?.entities.length)) {
-        
-        if (state.overwriteName) {
-          bp.label = generateThroughputName(state.analysisResult!);
-        }
-        
-        const ratesDescription = generateRatesDescription(state.analysisResult!);
-        
-        if (state.overwriteDescription) {
-          (bp as Blueprint & { description?: string }).description = ratesDescription;
-        } else if (state.appendDescription) {
-          const existingDesc = (bp as Blueprint & { description?: string }).description || "";
-          (bp as Blueprint & { description?: string }).description = existingDesc 
-            ? existingDesc + "\n\n" + ratesDescription 
-            : ratesDescription;
-        }
-        
-        return true;
+    // Apply modifications to the blueprint at the given path
+    const applyModifications = (bp: Blueprint): void => {
+      if (state.overwriteName) {
+        bp.label = generateThroughputName(state.analysisResult!);
       }
-      return false;
+      
+      const ratesDescription = generateRatesDescription(state.analysisResult!);
+      
+      if (state.overwriteDescription) {
+        bp.description = ratesDescription;
+      } else if (state.appendDescription) {
+        const existingDesc = bp.description || "";
+        bp.description = existingDesc 
+          ? existingDesc + "\n\n" + ratesDescription 
+          : ratesDescription;
+      }
     };
 
-    // For single blueprint
-    if (modified.blueprint) {
-      modifyBlueprint(modified.blueprint);
+    // Navigate to the blueprint using the path and apply modifications
+    const path = state.selectedPath;
+    
+    // For single blueprint (path is [0])
+    if (modified.blueprint && path.length === 1 && path[0] === 0) {
+      applyModifications(modified.blueprint);
     }
 
-    // For blueprint book, we need to find and modify the matching blueprint
-    const modifyInBook = (book: { blueprints: Array<{ blueprint?: Blueprint; blueprint_book?: unknown; index: number }> }): boolean => {
-      for (const entry of book.blueprints) {
-        if (entry.blueprint && modifyBlueprint(entry.blueprint)) {
-          return true;
-        }
-        if (entry.blueprint_book) {
-          if (modifyInBook(entry.blueprint_book as { blueprints: Array<{ blueprint?: Blueprint; blueprint_book?: unknown; index: number }> })) {
-            return true;
+    // For blueprint book, navigate using the path
+    if (modified.blueprint_book) {
+      type BookEntry = { blueprint?: Blueprint; blueprint_book?: { blueprints: BookEntry[] }; index: number };
+      let current: { blueprints: BookEntry[] } | undefined = modified.blueprint_book as { blueprints: BookEntry[] };
+      
+      for (let i = 0; i < path.length; i++) {
+        const idx = path[i];
+        if (!current || idx === undefined || !current.blueprints[idx]) break;
+        
+        const entry = current.blueprints[idx];
+        if (i === path.length - 1) {
+          // Last index - this should be the blueprint
+          if (entry?.blueprint) {
+            applyModifications(entry.blueprint);
+          }
+        } else {
+          // Navigate into nested book
+          if (entry?.blueprint_book) {
+            current = entry.blueprint_book;
+          } else {
+            break;
           }
         }
       }
-      return false;
-    };
-
-    if (modified.blueprint_book) {
-      modifyInBook(modified.blueprint_book as { blueprints: Array<{ blueprint?: Blueprint; blueprint_book?: unknown; index: number }> });
     }
 
     // Only generate output if any modification option is selected
@@ -325,7 +339,7 @@ export function App() {
             <BlueprintTreeView 
               nodes={tree} 
               onSelect={handleBlueprintSelect}
-              selectedBlueprint={state.selectedBlueprint}
+              selectedPath={state.selectedPath}
             />
           </section>
         )}

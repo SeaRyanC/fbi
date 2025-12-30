@@ -61,8 +61,22 @@ export function decodeBlueprint(blueprintString: string): BlueprintString {
     if (error instanceof SyntaxError) {
       throw new Error(`Invalid blueprint: malformed JSON - ${error.message}`);
     }
-    if (error instanceof Error && error.message.includes("incorrect header")) {
-      throw new Error("Invalid blueprint: not valid zlib data");
+    if (error instanceof Error) {
+      // Handle specific pako errors
+      if (error.message.includes("incorrect header")) {
+        throw new Error("Invalid blueprint: not valid zlib data");
+      }
+      if (error.message.includes("incorrect data check")) {
+        throw new Error("Invalid blueprint: data corruption detected (CRC mismatch)");
+      }
+      if (error.message.includes("invalid stored block")) {
+        throw new Error("Invalid blueprint: corrupted compressed data");
+      }
+      if (error.message.includes("invalid distance")) {
+        throw new Error("Invalid blueprint: corrupted compressed data");
+      }
+      // Re-throw with context for other errors
+      throw new Error(`Invalid blueprint: ${error.message}`);
     }
     throw error;
   }

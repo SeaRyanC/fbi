@@ -13,10 +13,6 @@ await esbuild.build({
   define: {
     "process.env.NODE_ENV": '"production"',
   },
-  alias: {
-    "react": "preact/compat",
-    "react-dom": "preact/compat",
-  },
 });
 
 console.log("Build complete: docs/bundle.js");
