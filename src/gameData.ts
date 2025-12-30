@@ -2230,3 +2230,24 @@ export function getDisplayName(internalName: string): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+/**
+ * Finds a recipe by its ingredient name for a specific category.
+ * Useful for inferring recipes in machines like electric furnaces that don't store recipe in blueprints.
+ */
+export function getRecipeByIngredient(
+  ingredientName: string,
+  category: RecipeCategory
+): Recipe | undefined {
+  for (const [, recipe] of RECIPES) {
+    if (recipe.category !== category) continue;
+    // Check if this recipe has the ingredient as its primary (or only) input
+    const hasIngredient = recipe.ingredients.some(
+      (ing) => ing.name === ingredientName
+    );
+    if (hasIngredient) {
+      return recipe;
+    }
+  }
+  return undefined;
+}
