@@ -583,6 +583,74 @@ export const RECIPES: Map<string, Recipe> = new Map([
       allowProductivity: true,
     },
   ],
+  // Engine recipes
+  [
+    "engine-unit",
+    {
+      name: "Engine Unit",
+      internalName: "engine-unit",
+      craftingTime: 10,
+      ingredients: [
+        { name: "steel-plate", amount: 1, type: "item" },
+        { name: "iron-gear-wheel", amount: 1, type: "item" },
+        { name: "pipe", amount: 2, type: "item" },
+      ],
+      products: [{ name: "engine-unit", amount: 1, type: "item" }],
+      category: "advanced-crafting",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "electric-engine-unit",
+    {
+      name: "Electric Engine Unit",
+      internalName: "electric-engine-unit",
+      craftingTime: 10,
+      ingredients: [
+        { name: "electronic-circuit", amount: 2, type: "item" },
+        { name: "engine-unit", amount: 1, type: "item" },
+        { name: "lubricant", amount: 15, type: "fluid" },
+      ],
+      products: [{ name: "electric-engine-unit", amount: 1, type: "item" }],
+      category: "crafting-with-fluid",
+      allowProductivity: true,
+    },
+  ],
+  // Battery recipe
+  [
+    "battery",
+    {
+      name: "Battery",
+      internalName: "battery",
+      craftingTime: 4,
+      ingredients: [
+        { name: "sulfuric-acid", amount: 20, type: "fluid" },
+        { name: "iron-plate", amount: 1, type: "item" },
+        { name: "copper-plate", amount: 1, type: "item" },
+      ],
+      products: [{ name: "battery", amount: 1, type: "item" }],
+      category: "chemistry",
+      allowProductivity: true,
+    },
+  ],
+  // Flying robot frame
+  [
+    "flying-robot-frame",
+    {
+      name: "Flying Robot Frame",
+      internalName: "flying-robot-frame",
+      craftingTime: 20,
+      ingredients: [
+        { name: "electric-engine-unit", amount: 1, type: "item" },
+        { name: "battery", amount: 2, type: "item" },
+        { name: "electronic-circuit", amount: 3, type: "item" },
+        { name: "steel-plate", amount: 1, type: "item" },
+      ],
+      products: [{ name: "flying-robot-frame", amount: 1, type: "item" }],
+      category: "crafting",
+      allowProductivity: true,
+    },
+  ],
 ]);
 
 /**
