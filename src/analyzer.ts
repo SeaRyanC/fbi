@@ -12,6 +12,7 @@ import type {
   AnalyzedMachine,
   AnalyzedBeacon,
   AnalysisResult,
+  RecipeCategory,
 } from "./types.js";
 import {
   getMachine,
@@ -23,6 +24,7 @@ import {
   isStorageEntity,
   isRailEntity,
   getDisplayName,
+  getRecipeByIngredient,
 } from "./gameData.js";
 
 /**
@@ -50,6 +52,37 @@ const MAX_BOTTLENECK_ITERATIONS = 30;
  * This avoids reporting items with negligible differences due to floating-point precision.
  */
 const EXTERNAL_FLOW_THRESHOLD = 0.0001;
+
+/**
+ * Threshold for matching positions to chests (1x1 entities).
+ * Chests are centered at their position, so 0.5 tiles covers the entire chest.
+ */
+const CHEST_POSITION_THRESHOLD = 0.5;
+
+/**
+ * Maximum distance (in tiles) to search for nearby filtered inserters
+ * when direct supply chain tracing doesn't find filters.
+ */
+const NEARBY_INSERTER_SEARCH_RADIUS = 10;
+
+/**
+ * List of known inserter entity types.
+ */
+const INSERTER_TYPES = [
+  "inserter",
+  "long-handed-inserter",
+  "fast-inserter",
+  "bulk-inserter",
+  "stack-inserter",
+  "burner-inserter",
+];
+
+/**
+ * Checks if an entity is an inserter
+ */
+function isInserter(entityName: string): boolean {
+  return INSERTER_TYPES.includes(entityName);
+}
 
 /**
  * Calculates distance between two positions
@@ -170,6 +203,187 @@ function calculateEffectiveStats(
 }
 
 /**
+ * Gets the drop position for an inserter based on its direction.
+ * Inserters pick from behind and drop in front.
+ * Direction: 0=North, 4=East, 8=South, 12=West
+ * Note: This assumes standard inserter reach of 1 tile. Long-handed inserters
+ * have a reach of 2 tiles but are rarely used with filters, so we use 1 tile
+ * as a reasonable default that works for most cases.
+ */
+function getInserterDropPosition(inserter: BlueprintEntity): Position {
+  const dir = inserter.direction ?? 0;
+  const pos = { ...inserter.position };
+  
+  // Standard inserter drops 1 tile in front
+  switch (dir) {
+    case 0: // North - drops above
+      pos.y -= 1;
+      break;
+    case 4: // East - drops to the right
+      pos.x += 1;
+      break;
+    case 8: // South - drops below
+      pos.y += 1;
+      break;
+    case 12: // West - drops to the left
+      pos.x -= 1;
+      break;
+  }
+  
+  return pos;
+}
+
+/**
+ * Gets the pickup position for an inserter based on its direction.
+ * Uses standard 1-tile reach (see getInserterDropPosition for details).
+ */
+function getInserterPickupPosition(inserter: BlueprintEntity): Position {
+  const dir = inserter.direction ?? 0;
+  const pos = { ...inserter.position };
+  
+  // Standard inserter picks 1 tile behind
+  switch (dir) {
+    case 0: // North - picks from below
+      pos.y += 1;
+      break;
+    case 4: // East - picks from the left
+      pos.x -= 1;
+      break;
+    case 8: // South - picks from above
+      pos.y -= 1;
+      break;
+    case 12: // West - picks from the right
+      pos.x += 1;
+      break;
+  }
+  
+  return pos;
+}
+
+/**
+ * Checks if a position is within a machine's bounds
+ */
+function isPositionInMachine(
+  pos: Position,
+  machinePos: Position,
+  machineSize: { width: number; height: number }
+): boolean {
+  const halfWidth = machineSize.width / 2;
+  const halfHeight = machineSize.height / 2;
+  
+  return (
+    pos.x >= machinePos.x - halfWidth &&
+    pos.x <= machinePos.x + halfWidth &&
+    pos.y >= machinePos.y - halfHeight &&
+    pos.y <= machinePos.y + halfHeight
+  );
+}
+
+/**
+ * Infers a recipe for a machine based on inserter filters in the blueprint.
+ * This is used for machines like electric furnaces that don't store their recipe in blueprints.
+ * 
+ * The algorithm:
+ * 1. Find inserters that drop items into this machine
+ * 2. If those inserters have filters, use the filtered item to infer the recipe
+ * 3. If the input inserters don't have filters, trace back through chests/storage
+ *    to find upstream inserters with filters
+ */
+function inferRecipeFromInserters(
+  machine: BlueprintEntity,
+  machineDef: ReturnType<typeof getMachine>,
+  allEntities: BlueprintEntity[]
+): Recipe | null {
+  if (!machineDef) return null;
+  
+  // Get all inserters in the blueprint
+  const inserters = allEntities.filter((e) => isInserter(e.name));
+  
+  // Find inserters that drop into this machine
+  const inputInserters = inserters.filter((ins) => {
+    const dropPos = getInserterDropPosition(ins);
+    return isPositionInMachine(dropPos, machine.position, machineDef.size);
+  });
+  
+  // Collect filtered items from input inserters
+  const filteredItems = new Set<string>();
+  
+  for (const ins of inputInserters) {
+    if (ins.filters?.length && ins.use_filters !== false) {
+      for (const filter of ins.filters) {
+        filteredItems.add(filter.name);
+      }
+    }
+  }
+  
+  // If no direct filters found, trace back through chests
+  if (filteredItems.size === 0) {
+    const storageEntities = allEntities.filter((e) => isStorageEntity(e.name));
+    
+    for (const ins of inputInserters) {
+      const pickupPos = getInserterPickupPosition(ins);
+      
+      // Find storage at the pickup position
+      const sourceStorage = storageEntities.find((s) => {
+        const dx = Math.abs(s.position.x - pickupPos.x);
+        const dy = Math.abs(s.position.y - pickupPos.y);
+        return dx <= CHEST_POSITION_THRESHOLD && dy <= CHEST_POSITION_THRESHOLD;
+      });
+      
+      if (sourceStorage) {
+        // Find inserters that feed into this storage
+        const feedingInserters = inserters.filter((feeder) => {
+          const dropPos = getInserterDropPosition(feeder);
+          const dx = Math.abs(dropPos.x - sourceStorage.position.x);
+          const dy = Math.abs(dropPos.y - sourceStorage.position.y);
+          return dx <= CHEST_POSITION_THRESHOLD && dy <= CHEST_POSITION_THRESHOLD;
+        });
+        
+        for (const feeder of feedingInserters) {
+          if (feeder.filters?.length && feeder.use_filters !== false) {
+            for (const filter of feeder.filters) {
+              filteredItems.add(filter.name);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // If still no filters, try to find any filtered inserter that might be 
+  // part of the supply chain feeding this machine
+  if (filteredItems.size === 0) {
+    // Look for filtered inserters that are nearby and might be part of the supply chain
+    const nearbyFiltered = inserters.filter((ins) => {
+      if (!ins.filters?.length) return false;
+      const dx = Math.abs(ins.position.x - machine.position.x);
+      const dy = Math.abs(ins.position.y - machine.position.y);
+      return dx <= NEARBY_INSERTER_SEARCH_RADIUS && dy <= NEARBY_INSERTER_SEARCH_RADIUS;
+    });
+    
+    for (const ins of nearbyFiltered) {
+      if (ins.filters) {
+        for (const filter of ins.filters) {
+          filteredItems.add(filter.name);
+        }
+      }
+    }
+  }
+  
+  // Now try to match filtered items to recipes in the machine's allowed categories
+  for (const itemName of filteredItems) {
+    for (const category of machineDef.allowedCategories) {
+      const recipe = getRecipeByIngredient(itemName, category as RecipeCategory);
+      if (recipe) {
+        return recipe;
+      }
+    }
+  }
+  
+  return null;
+}
+
+/**
  * Main analyzer class
  */
 export class BlueprintAnalyzer {
@@ -235,7 +449,15 @@ export class BlueprintAnalyzer {
       const machineDef = getMachine(entity.name);
       if (!machineDef) continue;
 
-      const recipe = entity.recipe ? getRecipe(entity.recipe) : null;
+      // Get recipe: first try explicit recipe, then infer from inserter filters
+      let recipe = entity.recipe ? getRecipe(entity.recipe) : null;
+      if (!recipe) {
+        recipe = inferRecipeFromInserters(
+          entity,
+          machineDef,
+          this.blueprint.entities
+        );
+      }
       const modules = extractModules(entity);
 
       // Find affecting beacons

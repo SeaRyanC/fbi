@@ -40,6 +40,15 @@ export interface BlueprintEntity {
   items?: BlueprintModuleEntry[];
   neighbours?: number[];
   connections?: Record<string, unknown>;
+  filters?: InserterFilter[];
+  use_filters?: boolean;
+}
+
+export interface InserterFilter {
+  index: number;
+  name: string;
+  quality?: string;
+  comparator?: string;
 }
 
 export interface BlueprintModuleEntry {
