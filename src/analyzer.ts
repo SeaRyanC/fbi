@@ -519,7 +519,7 @@ const FIGURE_SPACE = "\u2007";
 function formatRate(rate: number, maxIntegerDigits: number): string {
   const formatted = rate.toFixed(1);
   const [intPart] = formatted.split(".");
-  const padLength = maxIntegerDigits - (intPart?.length ?? 0);
+  const padLength = Math.max(0, maxIntegerDigits - (intPart?.length ?? 0));
   const padding = FIGURE_SPACE.repeat(padLength);
   return `${padding}${formatted}/s`;
 }
