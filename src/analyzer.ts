@@ -26,6 +26,25 @@ import {
 } from "./gameData.js";
 
 /**
+ * Tolerance for floating-point comparison when checking if production exceeds/falls short of demand.
+ * Using 1.0001 means we consider values within 0.01% as equal to avoid floating-point precision issues.
+ */
+const FLOW_COMPARISON_TOLERANCE = 1.0001;
+
+/**
+ * Minimum change threshold for utilization updates.
+ * Changes smaller than this are ignored to prevent infinite loops from tiny adjustments.
+ */
+const UTILIZATION_CHANGE_THRESHOLD = 0.0001;
+
+/**
+ * Maximum iterations for bottleneck resolution.
+ * This limit ensures the algorithm terminates even for complex or cyclic production chains.
+ * In practice, most production chains converge within 5-10 iterations.
+ */
+const MAX_BOTTLENECK_ITERATIONS = 30;
+
+/**
  * Calculates distance between two positions
  */
 function distance(p1: Position, p2: Position): number {
@@ -336,9 +355,7 @@ export class BlueprintAnalyzer {
     }
     
     // Iterative resolution - work backwards from final outputs
-    const MAX_ITERATIONS = 30;
-    
-    for (let iteration = 0; iteration < MAX_ITERATIONS; iteration++) {
+    for (let iteration = 0; iteration < MAX_BOTTLENECK_ITERATIONS; iteration++) {
       let changed = false;
       
       // Calculate required demand for each item based on current utilization
@@ -363,12 +380,12 @@ export class BlueprintAnalyzer {
       // If max production < required, scale down consumers
       for (const [item, required] of requiredInput) {
         const maxProd = maxProduction.get(item) ?? 0;
-        if (maxProd > 0 && required > maxProd * 1.0001) {
+        if (maxProd > 0 && required > maxProd * FLOW_COMPARISON_TOLERANCE) {
           const ratio = maxProd / required;
           for (const [, machine] of this.machines) {
             if (machine.inputRates.has(item)) {
               const newUtil = machine.utilization * ratio;
-              if (newUtil < machine.utilization - 0.0001) {
+              if (newUtil < machine.utilization - UTILIZATION_CHANGE_THRESHOLD) {
                 machine.utilization = newUtil;
                 machine.bottleneckedBy = `${getDisplayName(item)} shortage`;
                 changed = true;
@@ -391,13 +408,13 @@ export class BlueprintAnalyzer {
       // Producers should match what's needed by consumers
       for (const [item, needed] of adjustedInput) {
         const maxProd = maxProduction.get(item) ?? 0;
-        if (maxProd > needed * 1.0001) {
+        if (maxProd > needed * FLOW_COMPARISON_TOLERANCE) {
           // Scale down producers to match demand
           const targetRatio = needed / maxProd;
           const producers = itemProducers.get(item) ?? [];
           for (const entityNum of producers) {
             const machine = this.machines.get(entityNum);
-            if (machine && machine.utilization > targetRatio + 0.0001) {
+            if (machine && machine.utilization > targetRatio + UTILIZATION_CHANGE_THRESHOLD) {
               machine.utilization = targetRatio;
               machine.bottleneckedBy = `Demand limited (${getDisplayName(item)})`;
               changed = true;

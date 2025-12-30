@@ -91,7 +91,8 @@ Utilization:
 ## Space Age Considerations
 
 This analyzer uses Space Age (Factorio 2.0) mechanics:
-- Beacon transmission efficiency: 50%
+- Beacon transmission efficiency: 150% (1.5x module effects)
+- Beacon diminishing returns: Total effect divided by sqrt(number of beacons)
 - Foundry base productivity: 50%
 - Electromagnetic Plant base productivity: 50%
 - New recipes: Molten iron/copper, Casting recipes, etc.
