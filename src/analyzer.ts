@@ -54,6 +54,37 @@ const MAX_BOTTLENECK_ITERATIONS = 30;
 const EXTERNAL_FLOW_THRESHOLD = 0.0001;
 
 /**
+ * Threshold for matching positions to chests (1x1 entities).
+ * Chests are centered at their position, so 0.5 tiles covers the entire chest.
+ */
+const CHEST_POSITION_THRESHOLD = 0.5;
+
+/**
+ * Maximum distance (in tiles) to search for nearby filtered inserters
+ * when direct supply chain tracing doesn't find filters.
+ */
+const NEARBY_INSERTER_SEARCH_RADIUS = 10;
+
+/**
+ * List of known inserter entity types.
+ */
+const INSERTER_TYPES = [
+  "inserter",
+  "long-handed-inserter",
+  "fast-inserter",
+  "bulk-inserter",
+  "stack-inserter",
+  "burner-inserter",
+];
+
+/**
+ * Checks if an entity is an inserter
+ */
+function isInserter(entityName: string): boolean {
+  return INSERTER_TYPES.includes(entityName);
+}
+
+/**
  * Calculates distance between two positions
  */
 function distance(p1: Position, p2: Position): number {
@@ -175,12 +206,15 @@ function calculateEffectiveStats(
  * Gets the drop position for an inserter based on its direction.
  * Inserters pick from behind and drop in front.
  * Direction: 0=North, 4=East, 8=South, 12=West
+ * Note: This assumes standard inserter reach of 1 tile. Long-handed inserters
+ * have a reach of 2 tiles but are rarely used with filters, so we use 1 tile
+ * as a reasonable default that works for most cases.
  */
 function getInserterDropPosition(inserter: BlueprintEntity): Position {
   const dir = inserter.direction ?? 0;
   const pos = { ...inserter.position };
   
-  // Standard inserter range is 1 tile (approximate to center of next tile)
+  // Standard inserter drops 1 tile in front
   switch (dir) {
     case 0: // North - drops above
       pos.y -= 1;
@@ -201,12 +235,13 @@ function getInserterDropPosition(inserter: BlueprintEntity): Position {
 
 /**
  * Gets the pickup position for an inserter based on its direction.
+ * Uses standard 1-tile reach (see getInserterDropPosition for details).
  */
 function getInserterPickupPosition(inserter: BlueprintEntity): Position {
   const dir = inserter.direction ?? 0;
   const pos = { ...inserter.position };
   
-  // Standard inserter picks from behind (opposite of drop direction)
+  // Standard inserter picks 1 tile behind
   switch (dir) {
     case 0: // North - picks from below
       pos.y += 1;
@@ -262,7 +297,7 @@ function inferRecipeFromInserters(
   if (!machineDef) return null;
   
   // Get all inserters in the blueprint
-  const inserters = allEntities.filter((e) => e.name.includes("inserter"));
+  const inserters = allEntities.filter((e) => isInserter(e.name));
   
   // Find inserters that drop into this machine
   const inputInserters = inserters.filter((ins) => {
@@ -274,7 +309,7 @@ function inferRecipeFromInserters(
   const filteredItems = new Set<string>();
   
   for (const ins of inputInserters) {
-    if (ins.filters && ins.use_filters !== false) {
+    if (ins.filters?.length && ins.use_filters !== false) {
       for (const filter of ins.filters) {
         filteredItems.add(filter.name);
       }
@@ -292,8 +327,7 @@ function inferRecipeFromInserters(
       const sourceStorage = storageEntities.find((s) => {
         const dx = Math.abs(s.position.x - pickupPos.x);
         const dy = Math.abs(s.position.y - pickupPos.y);
-        // Chests are 1x1, so check if within 0.5 tiles
-        return dx <= 0.5 && dy <= 0.5;
+        return dx <= CHEST_POSITION_THRESHOLD && dy <= CHEST_POSITION_THRESHOLD;
       });
       
       if (sourceStorage) {
@@ -302,11 +336,11 @@ function inferRecipeFromInserters(
           const dropPos = getInserterDropPosition(feeder);
           const dx = Math.abs(dropPos.x - sourceStorage.position.x);
           const dy = Math.abs(dropPos.y - sourceStorage.position.y);
-          return dx <= 0.5 && dy <= 0.5;
+          return dx <= CHEST_POSITION_THRESHOLD && dy <= CHEST_POSITION_THRESHOLD;
         });
         
         for (const feeder of feedingInserters) {
-          if (feeder.filters && feeder.use_filters !== false) {
+          if (feeder.filters?.length && feeder.use_filters !== false) {
             for (const filter of feeder.filters) {
               filteredItems.add(filter.name);
             }
@@ -321,11 +355,10 @@ function inferRecipeFromInserters(
   if (filteredItems.size === 0) {
     // Look for filtered inserters that are nearby and might be part of the supply chain
     const nearbyFiltered = inserters.filter((ins) => {
-      if (!ins.filters || ins.filters.length === 0) return false;
+      if (!ins.filters?.length) return false;
       const dx = Math.abs(ins.position.x - machine.position.x);
       const dy = Math.abs(ins.position.y - machine.position.y);
-      // Within 10 tiles is considered "nearby" for supply chain analysis
-      return dx <= 10 && dy <= 10;
+      return dx <= NEARBY_INSERTER_SEARCH_RADIUS && dy <= NEARBY_INSERTER_SEARCH_RADIUS;
     });
     
     for (const ins of nearbyFiltered) {

@@ -2241,7 +2241,7 @@ export function getRecipeByIngredient(
 ): Recipe | undefined {
   for (const [, recipe] of RECIPES) {
     if (recipe.category !== category) continue;
-    // Check if this recipe has the ingredient as its primary (or only) input
+    // Check if this recipe uses the ingredient as an input
     const hasIngredient = recipe.ingredients.some(
       (ing) => ing.name === ingredientName
     );
