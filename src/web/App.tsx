@@ -14,6 +14,7 @@ interface AppState {
   overwriteName: boolean;
   overwriteDescription: boolean;
   appendDescription: boolean;
+  useRichText: boolean;
 }
 
 /**
@@ -24,31 +25,58 @@ function formatRate(rate: number): string {
 }
 
 /**
+ * Formats a rate string with optional rich text formatting
+ * When useRichText is true, wraps the rate with [font=compi]...[/font]
+ */
+function formatRateString(rate: number, suffix: string, useRichText: boolean): string {
+  const rateStr = `${formatRate(rate)}${suffix}`;
+  if (useRichText) {
+    return `[font=compi]${rateStr}[/font]`;
+  }
+  return rateStr;
+}
+
+/**
+ * Formats an item name with optional rich text formatting
+ * When useRichText is true, uses [item=xxx] format instead of display name
+ */
+function formatItemName(internalName: string, useRichText: boolean): string {
+  if (useRichText) {
+    return `[item=${internalName}]`;
+  }
+  return getDisplayName(internalName);
+}
+
+/**
  * Generates the throughput name for a blueprint based on outputs
  */
-function generateThroughputName(result: AnalysisResult): string {
+function generateThroughputName(result: AnalysisResult, useRichText: boolean): string {
   if (result.externalOutputs.size === 0) {
     return "No outputs";
   }
   
   const outputStrings: string[] = [];
   for (const [item, rate] of result.externalOutputs) {
-    outputStrings.push(`${formatRate(rate)} ${getDisplayName(item)}`);
+    const rateStr = formatRateString(rate, "/s", useRichText);
+    const itemName = formatItemName(item, useRichText);
+    outputStrings.push(`${rateStr} ${itemName}`);
   }
   
-  return outputStrings.join(", ") + " /s";
+  return outputStrings.join(", ");
 }
 
 /**
  * Generates the description text with input/output rates
  */
-function generateRatesDescription(result: AnalysisResult): string {
+function generateRatesDescription(result: AnalysisResult, useRichText: boolean): string {
   const lines: string[] = [];
   
   if (result.externalInputs.size > 0) {
     lines.push("Inputs:");
     for (const [item, rate] of result.externalInputs) {
-      lines.push(`  ${formatRate(rate)}/s ${getDisplayName(item)}`);
+      const rateStr = formatRateString(rate, "/s", useRichText);
+      const itemName = formatItemName(item, useRichText);
+      lines.push(`  ${rateStr} ${itemName}`);
     }
   }
   
@@ -56,7 +84,9 @@ function generateRatesDescription(result: AnalysisResult): string {
     if (lines.length > 0) lines.push("");
     lines.push("Outputs:");
     for (const [item, rate] of result.externalOutputs) {
-      lines.push(`  ${formatRate(rate)}/s ${getDisplayName(item)}`);
+      const rateStr = formatRateString(rate, "/s", useRichText);
+      const itemName = formatItemName(item, useRichText);
+      lines.push(`  ${rateStr} ${itemName}`);
     }
   }
   
@@ -189,6 +219,7 @@ export function App() {
     overwriteName: false,
     overwriteDescription: false,
     appendDescription: false,
+    useRichText: false,
   });
 
   // Parse blueprint and build tree
@@ -253,10 +284,10 @@ export function App() {
     // Apply modifications to the blueprint at the given path
     const applyModifications = (bp: Blueprint): void => {
       if (state.overwriteName) {
-        bp.label = generateThroughputName(state.analysisResult!);
+        bp.label = generateThroughputName(state.analysisResult!, state.useRichText);
       }
       
-      const ratesDescription = generateRatesDescription(state.analysisResult!);
+      const ratesDescription = generateRatesDescription(state.analysisResult!, state.useRichText);
       
       if (state.overwriteDescription) {
         bp.description = ratesDescription;
@@ -312,7 +343,7 @@ export function App() {
     } catch (e) {
       return `Error encoding: ${e instanceof Error ? e.message : String(e)}`;
     }
-  }, [decoded, state.selectedBlueprint, state.analysisResult, state.overwriteName, state.overwriteDescription, state.appendDescription]);
+  }, [decoded, state.selectedBlueprint, state.analysisResult, state.overwriteName, state.overwriteDescription, state.appendDescription, state.useRichText]);
 
   return (
     <div class="app">
@@ -393,6 +424,17 @@ export function App() {
                         }))}
                       />
                       Append Description (adds input/output rates to existing description)
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={state.useRichText}
+                        onChange={(e) => setState(prev => ({
+                          ...prev,
+                          useRichText: (e.target as HTMLInputElement).checked
+                        }))}
+                      />
+                      Use Rich Text (uses Factorio rich text icons like [item=iron-gear-wheel] and [font=compi] for rates)
                     </label>
                   </div>
 
