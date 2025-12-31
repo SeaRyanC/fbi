@@ -63,11 +63,12 @@ function formatItemName(internalName: string, useRichText: boolean): string {
 }
 
 /**
- * Generates the throughput name for a blueprint based on outputs
+ * Generates the throughput name for a blueprint based on outputs.
+ * Returns null if there are no outputs, indicating the original name should be kept.
  */
-function generateThroughputName(result: AnalysisResult, useRichText: boolean): string {
+function generateThroughputName(result: AnalysisResult, useRichText: boolean): string | null {
   if (result.externalOutputs.size === 0) {
-    return "No outputs";
+    return null;
   }
   
   const outputStrings: string[] = [];
@@ -123,7 +124,10 @@ function analyzeAndModifyBlueprint(
     const result = analyzer.analyze(bp.label || "Blueprint");
     
     if (overwriteName) {
-      bp.label = generateThroughputName(result, useRichText);
+      const throughputName = generateThroughputName(result, useRichText);
+      if (throughputName !== null) {
+        bp.label = throughputName;
+      }
     }
     
     const ratesDescription = generateRatesDescription(result, useRichText);
