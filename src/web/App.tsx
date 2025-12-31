@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { useState, useMemo } from "preact/hooks";
+import { useState, useMemo, useEffect } from "preact/hooks";
 import { decodeBlueprint, encodeBlueprint, buildBlueprintTree, type BlueprintTreeNode } from "./browserDecoder.js";
 import { BlueprintAnalyzer } from "../analyzer.js";
 import { getDisplayName } from "../gameData.js";
@@ -209,6 +209,28 @@ function AnalysisDisplay({ result }: { result: AnalysisResult }) {
   );
 }
 
+/**
+ * Find the first blueprint in the tree and return it with its path
+ */
+function findFirstBlueprint(nodes: BlueprintTreeNode[], currentPath: number[] = []): { blueprint: Blueprint; path: number[] } | null {
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i]!;
+    const nodePath = [...currentPath, i];
+    
+    if (node.type === "blueprint" && node.blueprint) {
+      return { blueprint: node.blueprint, path: nodePath };
+    }
+    
+    if (node.type === "book" && node.children) {
+      const result = findFirstBlueprint(node.children, nodePath);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return null;
+}
+
 export function App() {
   const [state, setState] = useState<AppState>({
     blueprintInput: "",
@@ -236,20 +258,8 @@ export function App() {
     }
   }, [state.blueprintInput]);
 
-  // Auto-select first blueprint when input changes
-  const handleInputChange = (value: string) => {
-    setState(prev => ({
-      ...prev,
-      blueprintInput: value,
-      selectedBlueprint: null,
-      selectedPath: [],
-      analysisResult: null,
-      error: null,
-    }));
-  };
-
-  // Analyze selected blueprint
-  const handleBlueprintSelect = (blueprint: Blueprint, path: number[]) => {
+  // Analyze and select a blueprint
+  const selectBlueprint = (blueprint: Blueprint, path: number[]) => {
     try {
       const analyzer = new BlueprintAnalyzer(blueprint);
       const result = analyzer.analyze(blueprint.label || "Selected Blueprint");
@@ -270,6 +280,33 @@ export function App() {
         error: e instanceof Error ? e.message : String(e),
       }));
     }
+  };
+
+  // Auto-select first blueprint when tree changes
+  useEffect(() => {
+    if (tree.length > 0) {
+      const first = findFirstBlueprint(tree);
+      if (first) {
+        selectBlueprint(first.blueprint, first.path);
+      }
+    }
+  }, [tree]);
+
+  // Handle input change
+  const handleInputChange = (value: string) => {
+    setState(prev => ({
+      ...prev,
+      blueprintInput: value,
+      selectedBlueprint: null,
+      selectedPath: [],
+      analysisResult: null,
+      error: null,
+    }));
+  };
+
+  // Handle blueprint selection from tree
+  const handleBlueprintSelect = (blueprint: Blueprint, path: number[]) => {
+    selectBlueprint(blueprint, path);
   };
 
   // Generate modified blueprint string
