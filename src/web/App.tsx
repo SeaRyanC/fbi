@@ -453,6 +453,37 @@ export function App() {
         </section>
 
         {tree.length > 0 && (
+          <div class="split-layout">
+            <section class="blueprints-section">
+              <h2>Blueprints</h2>
+              <div class="blueprint-list-container">
+                <BlueprintTreeView 
+                  nodes={tree} 
+                  onSelect={handleBlueprintSelect}
+                  selectedPath={state.selectedPath}
+                />
+              </div>
+            </section>
+
+            <div class="details-panel">
+              {state.error && <div class="error-message">{state.error}</div>}
+
+              {state.analysisResult && (
+                <section class="analysis-section">
+                  <AnalysisDisplay result={state.analysisResult} />
+                </section>
+              )}
+
+              {!state.analysisResult && !state.error && (
+                <div class="empty-details">
+                  <p>Select a blueprint from the list to see its analysis</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {tree.length > 0 && (
           <section class="output-section">
             <h2>Update All Blueprints</h2>
             <p class="section-description">These options will update the name and/or description of every blueprint in the book.</p>
@@ -523,37 +554,6 @@ export function App() {
               </div>
             )}
           </section>
-        )}
-
-        {tree.length > 0 && (
-          <div class="split-layout">
-            <section class="blueprints-section">
-              <h2>Blueprints</h2>
-              <div class="blueprint-list-container">
-                <BlueprintTreeView 
-                  nodes={tree} 
-                  onSelect={handleBlueprintSelect}
-                  selectedPath={state.selectedPath}
-                />
-              </div>
-            </section>
-
-            <div class="details-panel">
-              {state.error && <div class="error-message">{state.error}</div>}
-
-              {state.analysisResult && (
-                <section class="analysis-section">
-                  <AnalysisDisplay result={state.analysisResult} />
-                </section>
-              )}
-
-              {!state.analysisResult && !state.error && (
-                <div class="empty-details">
-                  <p>Select a blueprint from the list to see its analysis</p>
-                </div>
-              )}
-            </div>
-          </div>
         )}
       </main>
 
