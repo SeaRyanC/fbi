@@ -18,6 +18,21 @@ interface AppState {
 }
 
 /**
+ * Represents a blueprint book entry that can contain either a blueprint or a nested book
+ */
+interface BlueprintBookEntry {
+  blueprint?: Blueprint;
+  blueprint_book?: {
+    blueprints: BlueprintBookEntry[];
+    label?: string;
+    item?: string;
+    active_index?: number;
+    version?: number;
+  };
+  index: number;
+}
+
+/**
  * Format rates to a consistent string format
  */
 function formatRate(rate: number): string {
@@ -121,18 +136,17 @@ function analyzeAndModifyBlueprint(
         ? existingDesc + "\n\n" + ratesDescription 
         : ratesDescription;
     }
-  } catch {
-    // If analysis fails for a blueprint, skip modifications for it
+  } catch (e) {
+    // If analysis fails for a blueprint, log the error but continue with other blueprints
+    console.warn(`Failed to analyze blueprint "${bp.label || 'Unnamed'}":`, e);
   }
 }
 
 /**
  * Recursively processes all blueprints in a blueprint book entry and applies modifications
  */
-type BookEntry = { blueprint?: Blueprint; blueprint_book?: { blueprints: BookEntry[]; label?: string; item?: string; active_index?: number; version?: number }; index: number };
-
 function modifyAllBlueprints(
-  entries: BookEntry[],
+  entries: BlueprintBookEntry[],
   overwriteName: boolean,
   overwriteDescription: boolean,
   appendDescription: boolean,
@@ -404,7 +418,7 @@ export function App() {
     // For blueprint book, process ALL blueprints recursively
     if (modified.blueprint_book) {
       modifyAllBlueprints(
-        modified.blueprint_book.blueprints as BookEntry[],
+        modified.blueprint_book.blueprints as BlueprintBookEntry[],
         state.overwriteName,
         state.overwriteDescription,
         state.appendDescription,
