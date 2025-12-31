@@ -18,6 +18,21 @@ interface AppState {
 }
 
 /**
+ * Represents a blueprint book entry that can contain either a blueprint or a nested book
+ */
+interface BlueprintBookEntry {
+  blueprint?: Blueprint;
+  blueprint_book?: {
+    blueprints: BlueprintBookEntry[];
+    label?: string;
+    item?: string;
+    active_index?: number;
+    version?: number;
+  };
+  index: number;
+}
+
+/**
  * Format rates to a consistent string format
  */
 function formatRate(rate: number): string {
@@ -91,6 +106,72 @@ function generateRatesDescription(result: AnalysisResult, useRichText: boolean):
   }
   
   return lines.join("\n");
+}
+
+/**
+ * Analyzes a blueprint and applies modifications based on settings
+ */
+function analyzeAndModifyBlueprint(
+  bp: Blueprint,
+  overwriteName: boolean,
+  overwriteDescription: boolean,
+  appendDescription: boolean,
+  useRichText: boolean
+): void {
+  try {
+    const analyzer = new BlueprintAnalyzer(bp);
+    const result = analyzer.analyze(bp.label || "Blueprint");
+    
+    if (overwriteName) {
+      bp.label = generateThroughputName(result, useRichText);
+    }
+    
+    const ratesDescription = generateRatesDescription(result, useRichText);
+    
+    if (overwriteDescription) {
+      bp.description = ratesDescription;
+    } else if (appendDescription) {
+      const existingDesc = bp.description || "";
+      bp.description = existingDesc 
+        ? existingDesc + "\n\n" + ratesDescription 
+        : ratesDescription;
+    }
+  } catch (e) {
+    // If analysis fails for a blueprint, log the error but continue with other blueprints
+    console.warn(`Failed to analyze blueprint "${bp.label || 'Unnamed'}":`, e);
+  }
+}
+
+/**
+ * Recursively processes all blueprints in a blueprint book entry and applies modifications
+ */
+function modifyAllBlueprints(
+  entries: BlueprintBookEntry[],
+  overwriteName: boolean,
+  overwriteDescription: boolean,
+  appendDescription: boolean,
+  useRichText: boolean
+): void {
+  for (const entry of entries) {
+    if (entry.blueprint) {
+      analyzeAndModifyBlueprint(
+        entry.blueprint,
+        overwriteName,
+        overwriteDescription,
+        appendDescription,
+        useRichText
+      );
+    }
+    if (entry.blueprint_book) {
+      modifyAllBlueprints(
+        entry.blueprint_book.blueprints,
+        overwriteName,
+        overwriteDescription,
+        appendDescription,
+        useRichText
+      );
+    }
+  }
 }
 
 /**
@@ -309,65 +390,10 @@ export function App() {
     selectBlueprint(blueprint, path);
   };
 
-  // Generate modified blueprint string
+  // Generate modified blueprint string - applies to ALL blueprints in the book
   const modifiedBlueprint = useMemo(() => {
-    if (!decoded || !state.analysisResult || !state.selectedBlueprint || state.selectedPath.length === 0) {
+    if (!decoded) {
       return "";
-    }
-
-    // Deep clone the decoded data
-    const modified: BlueprintString = JSON.parse(JSON.stringify(decoded));
-    
-    // Apply modifications to the blueprint at the given path
-    const applyModifications = (bp: Blueprint): void => {
-      if (state.overwriteName) {
-        bp.label = generateThroughputName(state.analysisResult!, state.useRichText);
-      }
-      
-      const ratesDescription = generateRatesDescription(state.analysisResult!, state.useRichText);
-      
-      if (state.overwriteDescription) {
-        bp.description = ratesDescription;
-      } else if (state.appendDescription) {
-        const existingDesc = bp.description || "";
-        bp.description = existingDesc 
-          ? existingDesc + "\n\n" + ratesDescription 
-          : ratesDescription;
-      }
-    };
-
-    // Navigate to the blueprint using the path and apply modifications
-    const path = state.selectedPath;
-    
-    // For single blueprint (path is [0])
-    if (modified.blueprint && path.length === 1 && path[0] === 0) {
-      applyModifications(modified.blueprint);
-    }
-
-    // For blueprint book, navigate using the path
-    if (modified.blueprint_book) {
-      type BookEntry = { blueprint?: Blueprint; blueprint_book?: { blueprints: BookEntry[] }; index: number };
-      let current: { blueprints: BookEntry[] } | undefined = modified.blueprint_book as { blueprints: BookEntry[] };
-      
-      for (let i = 0; i < path.length; i++) {
-        const idx = path[i];
-        if (!current || idx === undefined || !current.blueprints[idx]) break;
-        
-        const entry = current.blueprints[idx];
-        if (i === path.length - 1) {
-          // Last index - this should be the blueprint
-          if (entry?.blueprint) {
-            applyModifications(entry.blueprint);
-          }
-        } else {
-          // Navigate into nested book
-          if (entry?.blueprint_book) {
-            current = entry.blueprint_book;
-          } else {
-            break;
-          }
-        }
-      }
     }
 
     // Only generate output if any modification option is selected
@@ -375,12 +401,37 @@ export function App() {
       return "";
     }
 
+    // Deep clone the decoded data
+    const modified: BlueprintString = JSON.parse(JSON.stringify(decoded));
+    
+    // For single blueprint
+    if (modified.blueprint) {
+      analyzeAndModifyBlueprint(
+        modified.blueprint,
+        state.overwriteName,
+        state.overwriteDescription,
+        state.appendDescription,
+        state.useRichText
+      );
+    }
+
+    // For blueprint book, process ALL blueprints recursively
+    if (modified.blueprint_book) {
+      modifyAllBlueprints(
+        modified.blueprint_book.blueprints as BlueprintBookEntry[],
+        state.overwriteName,
+        state.overwriteDescription,
+        state.appendDescription,
+        state.useRichText
+      );
+    }
+
     try {
       return encodeBlueprint(modified);
     } catch (e) {
       return `Error encoding: ${e instanceof Error ? e.message : String(e)}`;
     }
-  }, [decoded, state.selectedBlueprint, state.analysisResult, state.overwriteName, state.overwriteDescription, state.appendDescription, state.useRichText]);
+  }, [decoded, state.overwriteName, state.overwriteDescription, state.appendDescription, state.useRichText]);
 
   return (
     <div class="app">
@@ -423,78 +474,6 @@ export function App() {
                 </section>
               )}
 
-              {state.analysisResult && (
-                <section class="output-section">
-                  <h2>Output Options</h2>
-                  <div class="options">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={state.overwriteName}
-                        onChange={(e) => setState(prev => ({
-                          ...prev,
-                          overwriteName: (e.target as HTMLInputElement).checked
-                        }))}
-                      />
-                      Overwrite Name (sets name to throughput rate, e.g. "32.4 Iron Gear Wheel /s")
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={state.overwriteDescription}
-                        onChange={(e) => setState(prev => ({
-                          ...prev,
-                          overwriteDescription: (e.target as HTMLInputElement).checked,
-                          appendDescription: false
-                          }))}
-                      />
-                      Overwrite Description (replaces description with input/output rates)
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={state.appendDescription}
-                        onChange={(e) => setState(prev => ({
-                          ...prev,
-                          appendDescription: (e.target as HTMLInputElement).checked,
-                          overwriteDescription: false
-                        }))}
-                      />
-                      Append Description (adds input/output rates to existing description)
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={state.useRichText}
-                        onChange={(e) => setState(prev => ({
-                          ...prev,
-                          useRichText: (e.target as HTMLInputElement).checked
-                        }))}
-                      />
-                      Use Rich Text (uses Factorio rich text icons like [item=iron-gear-wheel] and [font=compi] for rates)
-                    </label>
-                  </div>
-
-                  {modifiedBlueprint && (
-                    <div class="output-blueprint">
-                      <h3>Modified Blueprint String</h3>
-                      <textarea
-                        value={modifiedBlueprint}
-                        readOnly
-                        rows={4}
-                        onClick={(e) => (e.target as HTMLTextAreaElement).select()}
-                      />
-                      <button 
-                        class="copy-button"
-                        onClick={() => navigator.clipboard.writeText(modifiedBlueprint)}
-                      >
-                        📋 Copy to Clipboard
-                      </button>
-                    </div>
-                  )}
-                </section>
-              )}
-
               {!state.analysisResult && !state.error && (
                 <div class="empty-details">
                   <p>Select a blueprint from the list to see its analysis</p>
@@ -502,6 +481,79 @@ export function App() {
               )}
             </div>
           </div>
+        )}
+
+        {tree.length > 0 && (
+          <section class="output-section">
+            <h2>Update All Blueprints</h2>
+            <p class="section-description">These options will update the name and/or description of every blueprint in the book.</p>
+            <div class="options">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={state.overwriteName}
+                  onChange={(e) => setState(prev => ({
+                    ...prev,
+                    overwriteName: (e.target as HTMLInputElement).checked
+                  }))}
+                />
+                Overwrite Name (sets name to throughput rate, e.g. "32.4 Iron Gear Wheel /s")
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={state.overwriteDescription}
+                  onChange={(e) => setState(prev => ({
+                    ...prev,
+                    overwriteDescription: (e.target as HTMLInputElement).checked,
+                    appendDescription: false
+                    }))}
+                />
+                Overwrite Description (replaces description with input/output rates)
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={state.appendDescription}
+                  onChange={(e) => setState(prev => ({
+                    ...prev,
+                    appendDescription: (e.target as HTMLInputElement).checked,
+                    overwriteDescription: false
+                  }))}
+                />
+                Append Description (adds input/output rates to existing description)
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={state.useRichText}
+                  onChange={(e) => setState(prev => ({
+                    ...prev,
+                    useRichText: (e.target as HTMLInputElement).checked
+                  }))}
+                />
+                Use Rich Text (uses Factorio rich text icons like [item=iron-gear-wheel] and [font=compi] for rates)
+              </label>
+            </div>
+
+            {modifiedBlueprint && (
+              <div class="output-blueprint">
+                <h3>Modified Blueprint String</h3>
+                <textarea
+                  value={modifiedBlueprint}
+                  readOnly
+                  rows={4}
+                  onClick={(e) => (e.target as HTMLTextAreaElement).select()}
+                />
+                <button 
+                  class="copy-button"
+                  onClick={() => navigator.clipboard.writeText(modifiedBlueprint)}
+                >
+                  📋 Copy to Clipboard
+                </button>
+              </div>
+            )}
+          </section>
         )}
       </main>
 
