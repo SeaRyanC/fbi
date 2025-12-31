@@ -1018,13 +1018,13 @@ export const RECIPES: Map<string, Recipe> = new Map([
     {
       name: "Piercing Rounds Magazine",
       internalName: "piercing-rounds-magazine",
-      craftingTime: 3,
+      craftingTime: 6,
       ingredients: [
-        { name: "firearm-magazine", amount: 1, type: "item" },
+        { name: "firearm-magazine", amount: 2, type: "item" },
         { name: "steel-plate", amount: 1, type: "item" },
-        { name: "copper-plate", amount: 5, type: "item" },
+        { name: "copper-plate", amount: 2, type: "item" },
       ],
-      products: [{ name: "piercing-rounds-magazine", amount: 1, type: "item" }],
+      products: [{ name: "piercing-rounds-magazine", amount: 2, type: "item" }],
       category: "crafting",
       allowProductivity: false,
     },
