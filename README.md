@@ -1,4 +1,4 @@
-# FBI - Factorio Blueprint Analyzer
+# FBI - Factorio Blueprint Investigator
 
 A command-line TypeScript application that analyzes Factorio blueprints and calculates production rates, external inputs/outputs, and machine utilization.
 
@@ -90,7 +90,7 @@ Utilization:
 
 ## Space Age Considerations
 
-This analyzer uses Space Age (Factorio 2.0) mechanics:
+This investigator uses Space Age (Factorio 2.0) mechanics:
 - Beacon transmission efficiency: 150% (1.5x module effects)
 - Beacon diminishing returns: Total effect divided by sqrt(number of beacons)
 - Foundry base productivity: 50%

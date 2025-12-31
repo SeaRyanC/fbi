@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Factorio Blueprint Analyzer - CLI Entry Point
+ * Factorio Blueprint Investigator - CLI Entry Point
  * Analyzes Factorio blueprints and outputs production rates
  */
 
@@ -12,8 +12,8 @@ import { BlueprintAnalyzer, formatAnalysisResult } from "./analyzer.js";
 
 function printUsage(): void {
   console.log(`
-Factorio Blueprint Analyzer (FBI)
-==================================
+Factorio Blueprint Investigator (FBI)
+=====================================
 
 Usage: fbi <blueprint-file>
 
