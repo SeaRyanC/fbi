@@ -385,7 +385,7 @@ export function App() {
   return (
     <div class="app">
       <header>
-        <h1>🏭 Factorio Blueprint Analyzer</h1>
+        <h1>🏭 Factorio Blueprint Investigator</h1>
         <p>Analyze production rates and throughput for your Factorio blueprints</p>
       </header>
 
@@ -506,7 +506,7 @@ export function App() {
       </main>
 
       <footer>
-        <p>Factorio Blueprint Analyzer (FBI) - Analyze production rates for your blueprints</p>
+        <p>Factorio Blueprint Investigator (FBI) - Analyze production rates for your blueprints</p>
       </footer>
     </div>
   );

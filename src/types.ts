@@ -1,5 +1,5 @@
 /**
- * Factorio Blueprint Analyzer Types
+ * Factorio Blueprint Investigator Types
  */
 
 // Blueprint format types

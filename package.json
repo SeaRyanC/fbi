@@ -1,7 +1,7 @@
 {
   "name": "fbi",
   "version": "1.0.0",
-  "description": "Factorio Blueprint Analyzer - analyzes input/output rates for blueprints",
+  "description": "Factorio Blueprint Investigator - analyzes input/output rates for blueprints",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
@@ -17,7 +17,7 @@
   "keywords": [
     "factorio",
     "blueprint",
-    "analyzer"
+    "investigator"
   ],
   "author": "",
   "license": "ISC",

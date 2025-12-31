@@ -1,5 +1,5 @@
 /**
- * Factorio Blueprint Analyzer
+ * Factorio Blueprint Investigator
  * Analyzes production rates, bottlenecks, and external I/O
  */
 
