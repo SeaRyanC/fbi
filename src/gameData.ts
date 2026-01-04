@@ -921,6 +921,21 @@ export const RECIPES: Map<string, Recipe> = new Map([
       allowProductivity: true,
     },
   ],
+  [
+    "electromagnetic-science-pack",
+    {
+      name: "Electromagnetic Science Pack",
+      internalName: "electromagnetic-science-pack",
+      craftingTime: 10,
+      ingredients: [
+        { name: "supercapacitor", amount: 1, type: "item" },
+        { name: "holmium-plate", amount: 2, type: "item" },
+      ],
+      products: [{ name: "electromagnetic-science-pack", amount: 1, type: "item" }],
+      category: "electromagnetics",
+      allowProductivity: true,
+    },
+  ],
   // Robots
   [
     "logistic-robot",
@@ -1911,6 +1926,21 @@ export const RECIPES: Map<string, Recipe> = new Map([
       ],
       products: [{ name: "electrolyte", amount: 10, type: "fluid" }],
       category: "electromagnetics",
+      allowProductivity: true,
+    },
+  ],
+  [
+    "holmium-solution",
+    {
+      name: "Holmium Solution",
+      internalName: "holmium-solution",
+      craftingTime: 1,
+      ingredients: [
+        { name: "holmium-ore", amount: 1, type: "item" },
+        { name: "water", amount: 50, type: "fluid" },
+      ],
+      products: [{ name: "holmium-solution", amount: 50, type: "fluid" }],
+      category: "chemistry",
       allowProductivity: true,
     },
   ],
