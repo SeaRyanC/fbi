@@ -1,0 +1,22 @@
+
+Processing 1 blueprint(s)...
+
+—
+Analyzed /home/runner/work/fbi/fbi/tests/ice-melter-mixed.txt
+
+Inputs
+8.3/s Petroleum Gas
+1.3/s Sulfuric Acid
+1.2/s Iron Plate
+1.0/s Copper Plate
+1.2/s Ice
+
+Outputs
+1.7/s Battery
+
+Utilization:
+ Cryogenic Plant (Battery) x1: 100%
+ Chemical Plant (Ice Melting) x1: 98%
+ Cryogenic Plant (Sulfuric Acid) x1: 8%
+ Cryogenic Plant (Sulfur) x1: 7%
+—
