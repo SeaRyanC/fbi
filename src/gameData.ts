@@ -1950,12 +1950,12 @@ export const RECIPES: Map<string, Recipe> = new Map([
     {
       name: "Holmium Solution",
       internalName: "holmium-solution",
-      craftingTime: 1,
+      craftingTime: 10,
       ingredients: [
-        { name: "holmium-ore", amount: 1, type: "item" },
-        { name: "water", amount: 50, type: "fluid" },
+        { name: "holmium-ore", amount: 2, type: "item" },
+        { name: "water", amount: 100, type: "fluid" },
       ],
-      products: [{ name: "holmium-solution", amount: 50, type: "fluid" }],
+      products: [{ name: "holmium-solution", amount: 100, type: "fluid" }],
       category: "chemistry",
       allowProductivity: true,
     },
