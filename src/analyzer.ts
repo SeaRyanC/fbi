@@ -204,7 +204,8 @@ function calculateEffectiveStats(
 
 /**
  * Gets the drop position for an inserter based on its direction.
- * Inserters pick from behind and drop in front.
+ * In Factorio, the direction indicates where the inserter picks FROM.
+ * The inserter drops on the OPPOSITE side from the pickup direction.
  * Direction: 0=North, 4=East, 8=South, 12=West
  * Note: This assumes standard inserter reach of 1 tile. Long-handed inserters
  * have a reach of 2 tiles but are rarely used with filters, so we use 1 tile
@@ -214,19 +215,19 @@ function getInserterDropPosition(inserter: BlueprintEntity): Position {
   const dir = inserter.direction ?? 0;
   const pos = { ...inserter.position };
   
-  // Standard inserter drops 1 tile in front
+  // Standard inserter drops 1 tile OPPOSITE to the direction it faces
   switch (dir) {
-    case 0: // North - drops above
-      pos.y -= 1;
-      break;
-    case 4: // East - drops to the right
-      pos.x += 1;
-      break;
-    case 8: // South - drops below
+    case 0: // Facing North (picks from North) - drops to South
       pos.y += 1;
       break;
-    case 12: // West - drops to the left
+    case 4: // Facing East (picks from East) - drops to West
       pos.x -= 1;
+      break;
+    case 8: // Facing South (picks from South) - drops to North
+      pos.y -= 1;
+      break;
+    case 12: // Facing West (picks from West) - drops to East
+      pos.x += 1;
       break;
   }
   
@@ -235,25 +236,26 @@ function getInserterDropPosition(inserter: BlueprintEntity): Position {
 
 /**
  * Gets the pickup position for an inserter based on its direction.
+ * In Factorio, the direction indicates where the inserter picks FROM.
  * Uses standard 1-tile reach (see getInserterDropPosition for details).
  */
 function getInserterPickupPosition(inserter: BlueprintEntity): Position {
   const dir = inserter.direction ?? 0;
   const pos = { ...inserter.position };
   
-  // Standard inserter picks 1 tile behind
+  // Standard inserter picks 1 tile in the direction it faces
   switch (dir) {
-    case 0: // North - picks from below
-      pos.y += 1;
-      break;
-    case 4: // East - picks from the left
-      pos.x -= 1;
-      break;
-    case 8: // South - picks from above
+    case 0: // Facing North - picks from North
       pos.y -= 1;
       break;
-    case 12: // West - picks from the right
+    case 4: // Facing East - picks from East
       pos.x += 1;
+      break;
+    case 8: // Facing South - picks from South
+      pos.y += 1;
+      break;
+    case 12: // Facing West - picks from West
+      pos.x -= 1;
       break;
   }
   
