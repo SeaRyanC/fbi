@@ -1023,6 +1023,9 @@ export class BlueprintAnalyzer {
    * This happens when a machine has significant supply-limited bottlenecks.
    */
   private checkForMissingInputProblems(): void {
+    // Use a Set to track reported problems for O(1) lookup
+    const reportedProblems = new Set<string>();
+    
     // Check each machine for supply-based bottlenecks
     for (const [, machine] of this.machines) {
       if (!machine.recipe) continue;
@@ -1033,31 +1036,27 @@ export class BlueprintAnalyzer {
         // Extract the item name from the bottleneck message
         const shortageMatch = machine.bottleneckedBy.match(/^(.+) shortage$/);
         if (shortageMatch && shortageMatch[1]) {
-          const itemName = shortageMatch[1];
+          const itemDisplayName = shortageMatch[1];
+          // Convert display name to internal name using consistent format
+          const itemInternalName = itemDisplayName.toLowerCase().replace(/ /g, "-");
           
           // Check if this item is produced at all in the blueprint
-          const flow = this.itemFlows.get(
-            // Try to convert display name back to internal name
-            itemName.toLowerCase().replace(/ /g, "-")
-          );
+          const flow = this.itemFlows.get(itemInternalName);
           
           // If there's no production of this item, report as missing input
           if (!flow || flow.produced === 0) {
-            // Check if we already have this problem reported
-            const alreadyReported = this.problems.some(
-              p => p.type === "missing-input" && 
-                   p.machineName === machine.machineName &&
-                   p.itemName === itemName
-            );
+            // Create a unique key for this problem to avoid duplicates
+            const problemKey = `missing-input:${machine.machineName}:${itemDisplayName}`;
             
-            if (!alreadyReported) {
+            if (!reportedProblems.has(problemKey)) {
+              reportedProblems.add(problemKey);
               this.problems.push({
                 type: "missing-input",
-                message: `${machine.machineName} may be missing input: ${itemName}`,
+                message: `${machine.machineName} may be missing input: ${itemDisplayName}`,
                 entityNumber: machine.entityNumber,
                 machineName: machine.machineName,
                 recipeName: machine.recipe.name,
-                itemName,
+                itemName: itemDisplayName,
               });
             }
           }
