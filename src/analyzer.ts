@@ -13,6 +13,7 @@ import type {
   AnalyzedBeacon,
   AnalysisResult,
   RecipeCategory,
+  Problem,
 } from "./types.js";
 import {
   getMachine,
@@ -397,6 +398,7 @@ export class BlueprintAnalyzer {
   private machines: Map<number, AnalyzedMachine> = new Map();
   private beacons: Map<number, AnalyzedBeacon> = new Map();
   private itemFlows: Map<string, { produced: number; consumed: number }> = new Map();
+  private problems: Problem[] = [];
 
   constructor(blueprint: Blueprint) {
     this.blueprint = blueprint;
@@ -421,12 +423,16 @@ export class BlueprintAnalyzer {
     // Step 5: Calculate utilization
     const utilization = this.calculateUtilization();
 
+    // Step 6: Check for missing input problems
+    this.checkForMissingInputProblems();
+
     return {
       filename,
       externalInputs: inputs,
       externalOutputs: outputs,
       machines: Array.from(this.machines.values()),
       utilization,
+      problems: this.problems,
     };
   }
 
@@ -457,6 +463,19 @@ export class BlueprintAnalyzer {
 
       // Get recipe: first try explicit recipe, then infer from inserter filters
       let recipe = entity.recipe ? getRecipe(entity.recipe) : null;
+      
+      // Check for unknown recipe problem (recipe specified but not in game data)
+      if (entity.recipe && !recipe) {
+        this.problems.push({
+          type: "unknown-recipe",
+          message: `Unknown recipe "${entity.recipe}" on ${machineDef.name}`,
+          entityNumber: entity.entity_number,
+          machineName: machineDef.name,
+          recipeName: entity.recipe,
+        });
+      }
+      
+      // Try to infer recipe if not found
       if (!recipe) {
         recipe = inferRecipeFromInserters(
           entity,
@@ -464,6 +483,17 @@ export class BlueprintAnalyzer {
           this.blueprint.entities
         );
       }
+      
+      // Check for no-recipe problem (couldn't find or infer any recipe)
+      if (!recipe) {
+        this.problems.push({
+          type: "no-recipe",
+          message: `${machineDef.name} has no recipe`,
+          entityNumber: entity.entity_number,
+          machineName: machineDef.name,
+        });
+      }
+      
       const modules = extractModules(entity);
 
       // Find affecting beacons
@@ -987,6 +1017,53 @@ export class BlueprintAnalyzer {
 
     return result;
   }
+
+  /**
+   * Checks for machines that appear to be missing necessary inputs.
+   * This happens when a machine has significant supply-limited bottlenecks.
+   */
+  private checkForMissingInputProblems(): void {
+    // Use a Set to track reported problems for O(1) lookup
+    const reportedProblems = new Set<string>();
+    
+    // Check each machine for supply-based bottlenecks
+    for (const [, machine] of this.machines) {
+      if (!machine.recipe) continue;
+      
+      // If a machine is bottlenecked by a shortage and the item has no internal production,
+      // it means the input is completely missing from the blueprint
+      if (machine.bottleneckedBy && machine.bottleneckedBy.includes("shortage")) {
+        // Extract the item name from the bottleneck message
+        const shortageMatch = machine.bottleneckedBy.match(/^(.+) shortage$/);
+        if (shortageMatch && shortageMatch[1]) {
+          const itemDisplayName = shortageMatch[1];
+          // Convert display name to internal name using consistent format
+          const itemInternalName = itemDisplayName.toLowerCase().replace(/ /g, "-");
+          
+          // Check if this item is produced at all in the blueprint
+          const flow = this.itemFlows.get(itemInternalName);
+          
+          // If there's no production of this item, report as missing input
+          if (!flow || flow.produced === 0) {
+            // Create a unique key for this problem to avoid duplicates
+            const problemKey = `missing-input:${machine.machineName}:${itemDisplayName}`;
+            
+            if (!reportedProblems.has(problemKey)) {
+              reportedProblems.add(problemKey);
+              this.problems.push({
+                type: "missing-input",
+                message: `${machine.machineName} may be missing input: ${itemDisplayName}`,
+                entityNumber: machine.entityNumber,
+                machineName: machine.machineName,
+                recipeName: machine.recipe.name,
+                itemName: itemDisplayName,
+              });
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -1065,6 +1142,15 @@ export function formatAnalysisResult(result: AnalysisResult): string {
   for (const [key, data] of sortedUtil) {
     const percent = (data.avgUtilization * 100).toFixed(0);
     lines.push(` ${key} x${data.count}: ${percent}%`);
+  }
+
+  // Format problems if any
+  if (result.problems.length > 0) {
+    lines.push("");
+    lines.push("Problems:");
+    for (const problem of result.problems) {
+      lines.push(`  ⚠ ${problem.message}`);
+    }
   }
 
   lines.push("—");

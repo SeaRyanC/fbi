@@ -291,6 +291,20 @@ function AnalysisDisplay({ result }: { result: AnalysisResult }) {
             ))}
         </ul>
       </div>
+      
+      {result.problems.length > 0 && (
+        <div class="flow-section problems-section">
+          <h4>Problems</h4>
+          <ul class="problems-list">
+            {result.problems.map((problem, idx) => (
+              <li key={idx} class={`problem-item problem-${problem.type}`}>
+                <span class="problem-icon">⚠</span>
+                <span class="problem-message">{problem.message}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
