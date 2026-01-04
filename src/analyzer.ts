@@ -676,6 +676,15 @@ export class BlueprintAnalyzer {
       isStorageEntity(e.name)
     );
 
+    // Identify which items are consumed internally by any machine
+    const internallyConsumedItems = new Set<string>();
+    for (const [, machine] of this.machines) {
+      if (!machine.recipe) continue;
+      for (const [item] of machine.inputRates) {
+        internallyConsumedItems.add(item);
+      }
+    }
+
     for (const [item, flow] of this.itemFlows) {
       // Apply utilization to flows
       const adjustedConsumed = flow.consumed;
@@ -687,8 +696,10 @@ export class BlueprintAnalyzer {
         // Net consumption - this is an external input
         inputs.set(item, -netFlow);
       } else if (netFlow > EXTERNAL_FLOW_THRESHOLD) {
-        // Net production - this is an external output
-        outputs.set(item, netFlow);
+        // Net production - only count as external output if NOT consumed internally
+        if (!internallyConsumedItems.has(item)) {
+          outputs.set(item, netFlow);
+        }
       }
       // Items with |netFlow| <= threshold are considered balanced and not reported
     }
