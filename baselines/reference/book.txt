@@ -10,7 +10,7 @@ Inputs
   2.2/s Calcite
 
 Outputs
-2100.1/s Molten Iron
+  None
 
 Utilization:
  Foundry (Molten Iron) x8: 100%
