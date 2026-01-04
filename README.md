@@ -100,12 +100,34 @@ This investigator uses Space Age (Factorio 2.0) mechanics:
 ## Development
 
 ```bash
+# Install dependencies
+npm install
+
 # Build
 npm run build
 
 # Run tests
 npm test
+
+# Accept new baseline outputs (after reviewing changes)
+npm run baseline-accept
 ```
+
+### Testing
+
+This project uses baseline testing. Tests compare CLI output against known-good reference files:
+
+- Test inputs: `tests/*.txt` (blueprint files)
+- Reference outputs: `baselines/reference/*.txt` (checked into repo)
+- Actual outputs: `baselines/local/*.txt` (generated during test runs, not committed)
+
+When you make changes that affect output:
+1. Run `npm test` to see what changed
+2. Review the diff to ensure changes are correct
+3. Run `npm run baseline-accept` to update reference baselines
+4. Commit the updated baseline files with your changes
+
+**Important**: We do not write explicit unit tests that validate specific output values. All testing is done through baseline comparison. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## License
 

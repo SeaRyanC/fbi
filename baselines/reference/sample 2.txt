@@ -1,0 +1,17 @@
+
+Processing 1 blueprint(s)...
+
+—
+Analyzed Electric Engine Units
+
+Inputs
+ 48.0/s Electronic Circuit
+ 24.0/s Engine Unit
+359.8/s Lubricant
+
+Outputs
+33.6/s Electric Engine Unit
+
+Utilization:
+ Assembling Machine 3 (Electric Engine Unit) x64: 100%
+—

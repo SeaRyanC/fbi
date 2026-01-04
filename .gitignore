@@ -22,3 +22,6 @@ npm-debug.log*
 .env.local
 
 # Source maps (keep docs/bundle.js.map for debugging)
+
+# Test output
+baselines/local/

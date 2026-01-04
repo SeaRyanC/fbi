@@ -1,0 +1,526 @@
+
+Processing 36 blueprint(s)...
+
+Processing: Fluid Mine
+—
+Analyzed Fluid Mine
+
+Inputs
+110.5/s Iron Ore
+  2.2/s Calcite
+
+Outputs
+2100.1/s Molten Iron
+
+Utilization:
+ Foundry (Molten Iron) x8: 100%
+—
+Processing: Fluid Mining Station
+—
+Analyzed Fluid Mining Station
+
+Inputs
+  None
+
+Outputs
+  None
+
+Utilization:
+—
+Processing: Electronic Circuit
+—
+Analyzed Electronic Circuit
+
+Inputs
+299.5/s Molten Copper
+505.9/s Molten Iron
+
+Outputs
+151.8/s Electronic Circuit
+
+Utilization:
+ Electromagnetic Plant (Electronic Circuit) x8: 100%
+ Foundry (Casting Iron) x4: 90%
+ Foundry (Casting Copper Cable) x8: 74%
+—
+Processing: Inserters
+—
+Analyzed Inserters
+
+Inputs
+518.3/s Molten Iron
+ 47.9/s Electronic Circuit
+
+Outputs
+47.9/s Inserter
+
+Utilization:
+ Foundry (Casting Iron) x4: 100%
+ Assembling Machine 3 (Inserter) x4: 100%
+ Foundry (Casting Iron Gear Wheel) x2: 98%
+—
+Processing: Belts
+—
+Analyzed Belts
+
+Inputs
+504.3/s Molten Iron
+
+Outputs
+143.7/s Transport Belt
+
+Utilization:
+ Foundry (Casting Iron) x4: 100%
+ Foundry (Transport Belt) x2: 100%
+ Foundry (Casting Iron Gear Wheel) x4: 83%
+—
+Processing: Train Idle
+—
+Analyzed Train Idle
+
+Inputs
+  None
+
+Outputs
+  None
+
+Utilization:
+—
+Processing: Oil Processing
+—
+Analyzed Oil Processing
+
+Inputs
+404.0/s Crude Oil
+202.0/s Water
+
+Outputs
+131.3/s Heavy Oil
+236.3/s Light Oil
+288.9/s Petroleum Gas
+
+Utilization:
+ Oil Refinery (Advanced Oil Processing) x4: 100%
+—
+Processing: Heavy Oil Cracking
+—
+Analyzed Heavy Oil Cracking
+
+Inputs
+1631.4/s Heavy Oil
+1223.5/s Water
+
+Outputs
+1223.5/s Light Oil
+
+Utilization:
+ Chemical Plant (Heavy Oil Cracking) x16: 100%
+—
+Processing: Light Oil Cracking
+—
+Analyzed Light Oil Cracking
+
+Inputs
+1223.5/s Light Oil
+1223.5/s Water
+
+Outputs
+815.7/s Petroleum Gas
+
+Utilization:
+ Chemical Plant (Light Oil Cracking) x16: 100%
+—
+Processing: Plastic
+—
+Analyzed Plastic
+
+Inputs
+2018.6/s Petroleum Gas
+ 100.9/s Coal
+
+Outputs
+363.4/s Plastic Bar
+
+Utilization:
+ Cryogenic Plant (Plastic Bar) x16: 100%
+—
+Processing: Advanced Circuits
+—
+Analyzed Advanced Circuits
+
+Inputs
+101.2/s Molten Copper
+ 38.4/s Electronic Circuit
+ 38.4/s Plastic Bar
+
+Outputs
+38.4/s Advanced Circuit
+
+Utilization:
+ Electromagnetic Plant (Advanced Circuit) x16: 100%
+ Foundry (Casting Copper Cable) x8: 33%
+—
+Processing: Green Science
+—
+Analyzed Green Science
+
+Inputs
+50.0/s Inserter
+50.0/s Transport Belt
+
+Outputs
+70.0/s Logistic Science Pack
+
+Utilization:
+ Assembling Machine 3 (Logistic Science Pack) x80: 100%
+—
+Processing: Solid Fuel from Light Oil
+—
+Analyzed Solid Fuel from Light Oil
+
+Inputs
+880.0/s Light Oil
+
+Outputs
+88.0/s Solid Fuel
+
+Utilization:
+ Chemical Plant (Solid Fuel from Light Oil) x32: 100%
+—
+Processing: Sulfur
+—
+Analyzed Sulfur
+
+Inputs
+1344.0/s Water
+1344.0/s Petroleum Gas
+
+Outputs
+161.3/s Sulfur
+
+Utilization:
+ Cryogenic Plant (Sulfur) x8: 100%
+—
+Processing: Sulfuric Acid
+—
+Analyzed Sulfuric Acid
+
+Inputs
+ 132.8/s Molten Iron
+ 126.2/s Sulfur
+2523.3/s Water
+
+Outputs
+2271.0/s Sulfuric Acid
+
+Utilization:
+ Cryogenic Plant (Sulfuric Acid) x4: 100%
+ Foundry (Casting Iron) x2: 89%
+—
+Processing: Processing Unit
+—
+Analyzed Processing Unit
+
+Inputs
+459.2/s Electronic Circuit
+ 45.9/s Advanced Circuit
+114.8/s Sulfuric Acid
+
+Outputs
+45.9/s Processing Unit
+
+Utilization:
+ Electromagnetic Plant (Processing Unit) x32: 100%
+—
+Processing: Uranium Mine
+—
+Analyzed Uranium Mine
+
+Inputs
+  None
+
+Outputs
+  None
+
+Utilization:
+—
+Processing: Uranium Miner
+—
+Analyzed Uranium Miner
+
+Inputs
+3.3/s Uranium Ore
+
+Outputs
+0.0/s Uranium 235
+0.3/s Uranium 238
+
+Utilization:
+ Centrifuge (Uranium Processing) x2: 100%
+—
+Processing: Engine Mix Train
+—
+Analyzed Engine Mix Train
+
+Inputs
+  None
+
+Outputs
+  None
+
+Utilization:
+—
+Processing: Engine Parts
+—
+Analyzed Engine Parts
+
+Inputs
+2644.0/s Molten Iron
+
+Outputs
+ 64.6/s Steel Plate
+162.0/s Pipe
+103.4/s Iron Gear Wheel
+
+Utilization:
+ Foundry (Casting Steel) x8: 100%
+ Foundry (Casting Pipe) x6: 100%
+ Foundry (Casting Iron Gear Wheel) x4: 100%
+—
+Processing: Engine Units
+—
+Analyzed Engine Units
+
+Inputs
+30.0/s Steel Plate
+30.0/s Iron Gear Wheel
+60.0/s Pipe
+
+Outputs
+42.0/s Engine Unit
+
+Utilization:
+ Assembling Machine 3 (Engine Unit) x80: 100%
+—
+Processing: Lubricant
+—
+Analyzed Lubricant
+
+Inputs
+337.9/s Heavy Oil
+
+Outputs
+439.3/s Lubricant
+
+Utilization:
+ Chemical Plant (Lubricant) x8: 100%
+—
+Processing: Electric Engine Units
+—
+Analyzed Electric Engine Units
+
+Inputs
+ 48.0/s Electronic Circuit
+ 24.0/s Engine Unit
+359.8/s Lubricant
+
+Outputs
+33.6/s Electric Engine Unit
+
+Utilization:
+ Assembling Machine 3 (Electric Engine Unit) x64: 100%
+—
+Processing: Low Density Structure
+—
+Analyzed Low Density Structure
+
+Inputs
+ 360.4/s Molten Iron
+1201.3/s Molten Copper
+  30.0/s Plastic Bar
+
+Outputs
+11.4/s Low Density Structure
+
+Utilization:
+ Foundry (Casting Low Density Structure) x8: 100%
+—
+Processing: Battery
+—
+Analyzed Battery
+
+Inputs
+504.7/s Sulfuric Acid
+ 25.2/s Iron Plate
+ 25.2/s Copper Plate
+
+Outputs
+45.4/s Battery
+
+Utilization:
+ Cryogenic Plant (Battery) x16: 100%
+—
+Processing: Plates
+—
+Analyzed Plates
+
+Inputs
+1841.6/s Molten Iron
+ 680.0/s Molten Copper
+
+Outputs
+135.9/s Iron Plate
+ 71.3/s Steel Plate
+129.2/s Copper Plate
+
+Utilization:
+ Foundry (Casting Iron) x8: 100%
+ Foundry (Casting Steel) x8: 100%
+ Foundry (Casting Copper) x8: 100%
+—
+Processing: Flying Robot Frame
+—
+Analyzed Flying Robot Frame
+
+Inputs
+ 3.4/s Electric Engine Unit
+ 6.8/s Battery
+10.2/s Electronic Circuit
+ 3.4/s Steel Plate
+
+Outputs
+4.8/s Flying Robot Frame
+
+Utilization:
+ Assembling Machine 3 (Flying Robot Frame) x16: 100%
+—
+Processing: Yellow Science
+—
+Analyzed Yellow Science
+
+Inputs
+9.7/s Low Density Structure
+6.5/s Processing Unit
+3.2/s Flying Robot Frame
+
+Outputs
+13.6/s Utility Science Pack
+
+Utilization:
+ Assembling Machine 3 (Utility Science Pack) x16: 100%
+—
+Processing: Blue Science
+—
+Analyzed Blue Science
+
+Inputs
+5.7/s Engine Unit
+8.5/s Advanced Circuit
+2.8/s Sulfur
+
+Outputs
+7.9/s Chemical Science Pack
+
+Utilization:
+ Assembling Machine 3 (Chemical Science Pack) x16: 100%
+—
+Processing: Make More Trains
+—
+Analyzed Make More Trains
+
+Inputs
+  None
+
+Outputs
+  None
+
+Utilization:
+—
+Processing: Rocket Fuel
+—
+Analyzed Rocket Fuel
+
+Inputs
+33.6/s Solid Fuel
+33.6/s Light Oil
+
+Outputs
+4.7/s Rocket Fuel
+
+Utilization:
+ Assembling Machine 3 (Rocket Fuel) x32: 100%
+—
+Processing: Rail
+—
+Analyzed Rail
+
+Inputs
+896.0/s Molten Iron
+ 48.6/s Stone
+
+Outputs
+97.3/s Rail
+
+Utilization:
+ Foundry (Casting Iron Stick) x4: 100%
+ Assembling Machine 3 (Rail) x8: 81%
+ Foundry (Casting Steel) x16: 67%
+—
+Processing: Stone Brick
+—
+Analyzed Stone Brick
+
+Inputs
+329.8/s Stone
+
+Outputs
+197.9/s Stone Brick
+
+Utilization:
+ Electric Furnace (Stone Brick) x80: 100%
+—
+Processing: Electric Furnace
+—
+Analyzed Electric Furnace
+
+Inputs
+ 22.5/s Advanced Circuit
+ 45.0/s Stone Brick
+900.0/s Molten Iron
+
+Outputs
+4.5/s Electric Furnace
+
+Utilization:
+ Foundry (Casting Steel) x4: 100%
+ Assembling Machine 3 (Electric Furnace) x16: 19%
+—
+Processing: Prod Module
+—
+Analyzed Prod Module
+
+Inputs
+104.0/s Electronic Circuit
+104.0/s Advanced Circuit
+
+Outputs
+31.2/s Productivity Module
+
+Utilization:
+ Electromagnetic Plant (Productivity Module) x24: 100%
+—
+Processing: Purple Science
+—
+Analyzed Purple Science
+
+Inputs
+ 3.2/s Electric Furnace
+ 3.2/s Productivity Module
+97.1/s Rail
+
+Outputs
+13.6/s Production Science Pack
+
+Utilization:
+ Assembling Machine 3 (Production Science Pack) x16: 100%
+—

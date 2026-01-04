@@ -1,0 +1,19 @@
+
+Processing 1 blueprint(s)...
+
+—
+Analyzed /home/runner/work/fbi/fbi/tests/sample.txt
+
+Inputs
+0.3/s Iron Ore
+0.0/s Calcite
+0.6/s Copper Plate
+
+Outputs
+0.9/s Automation Science Pack
+
+Utilization:
+ Assembling Machine 3 (Automation Science Pack) x1: 100%
+ Foundry (Molten Iron) x1: 4%
+ Foundry (Casting Iron Gear Wheel) x1: 4%
+—
