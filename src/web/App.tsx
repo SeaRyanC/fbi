@@ -4,7 +4,7 @@ import { decodeBlueprint, encodeBlueprint, buildBlueprintTree, type BlueprintTre
 import { BlueprintAnalyzer } from "../analyzer.js";
 import { getDisplayName } from "../gameData.js";
 import type { Blueprint, BlueprintString, AnalysisResult } from "../types.js";
-import { VERSION } from "../version.js";
+import { BUILD_NUMBER } from "../version.js";
 
 interface AppState {
   blueprintInput: string;
@@ -441,7 +441,7 @@ export function App() {
   return (
     <div class="app">
       <header>
-        <h1>🏭 Factorio Blueprint Investigator v{VERSION}</h1>
+        <h1>🏭 Factorio Blueprint Investigator Build #{BUILD_NUMBER}</h1>
         <p>Analyze production rates and throughput for your Factorio blueprints</p>
       </header>
 
