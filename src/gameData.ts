@@ -944,8 +944,9 @@ export const RECIPES: Map<string, Recipe> = new Map([
       internalName: "electromagnetic-science-pack",
       craftingTime: 10,
       ingredients: [
+        { name: "accumulator", amount: 1, type: "item" },
         { name: "supercapacitor", amount: 1, type: "item" },
-        { name: "holmium-plate", amount: 2, type: "item" },
+        { name: "holmium-plate", amount: 1, type: "item" },
       ],
       products: [{ name: "electromagnetic-science-pack", amount: 1, type: "item" }],
       category: "electromagnetics",
