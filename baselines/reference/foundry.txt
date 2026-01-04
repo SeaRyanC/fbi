@@ -1,0 +1,18 @@
+
+Processing 1 blueprint(s)...
+
+—
+Analyzed /home/runner/work/fbi/fbi/tests/foundry.txt
+
+Inputs
+19.7/s Molten Copper
+ 3.8/s Firearm Magazine
+ 1.9/s Steel Plate
+
+Outputs
+3.8/s Piercing Rounds Magazine
+
+Utilization:
+ Assembling Machine 3 (Piercing Rounds Magazine) x2: 100%
+ Foundry (Casting Copper) x1: 42%
+—

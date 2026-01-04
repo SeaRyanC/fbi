@@ -1,0 +1,15 @@
+
+Processing 1 blueprint(s)...
+
+—
+Analyzed Stone Brick
+
+Inputs
+329.8/s Stone
+
+Outputs
+197.9/s Stone Brick
+
+Utilization:
+ Electric Furnace (Stone Brick) x80: 100%
+—

@@ -12,7 +12,8 @@
     "build:web": "node build-web.mjs",
     "start": "node dist/index.js",
     "analyze": "node dist/index.js",
-    "test": "node --experimental-test-coverage --test dist/**/*.test.js"
+    "test": "node test-runner.mjs",
+    "baseline-accept": "node baseline-accept.mjs"
   },
   "keywords": [
     "factorio",

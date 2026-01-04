@@ -1,0 +1,18 @@
+
+Processing 1 blueprint(s)...
+
+—
+Analyzed Rail
+
+Inputs
+896.0/s Molten Iron
+ 48.6/s Stone
+
+Outputs
+97.3/s Rail
+
+Utilization:
+ Foundry (Casting Iron Stick) x4: 100%
+ Assembling Machine 3 (Rail) x8: 81%
+ Foundry (Casting Steel) x16: 67%
+—
