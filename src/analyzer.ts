@@ -153,11 +153,19 @@ function extractModules(entity: BlueprintEntity): Module[] {
  * Calculates effective speed and productivity for a machine
  * Considers internal modules and beacon effects
  * Beacon effects use diminishing returns: total effect is divided by sqrt(n) where n is number of beacons
+ * 
+ * Module effects are filtered based on:
+ * - Machine's allowedEffects: Only effects the machine supports are applied
+ * - Recipe's allowProductivity: Productivity bonus only applies if the recipe allows it
+ * 
+ * Note: Speed penalties from productivity modules always apply, even if the recipe
+ * doesn't allow the productivity bonus itself.
  */
 function calculateEffectiveStats(
   machine: ReturnType<typeof getMachine>,
   modules: Module[],
-  beacons: AnalyzedBeacon[]
+  beacons: AnalyzedBeacon[],
+  recipe: Recipe | null
 ): { speed: number; productivity: number } {
   if (!machine) {
     return { speed: 1, productivity: 1 };
@@ -166,10 +174,23 @@ function calculateEffectiveStats(
   let speedBonus = 0;
   let productivityBonus = machine.baseProductivity;
 
+  // Check if machine allows speed effect
+  const allowsSpeed = machine.allowedEffects.includes("speed");
+  // Check if machine allows productivity and recipe allows productivity
+  const allowsProductivity = machine.allowedEffects.includes("productivity") && 
+                             (recipe?.allowProductivity ?? false);
+
   // Apply internal modules
   for (const module of modules) {
-    speedBonus += module.effects.speed ?? 0;
-    productivityBonus += module.effects.productivity ?? 0;
+    // Speed effects (including negative speed from productivity modules) are always applied
+    // if the machine allows speed effects
+    if (allowsSpeed && module.effects.speed !== undefined) {
+      speedBonus += module.effects.speed;
+    }
+    // Productivity bonus only applies if both machine and recipe allow it
+    if (allowsProductivity && module.effects.productivity !== undefined) {
+      productivityBonus += module.effects.productivity;
+    }
   }
 
   // Apply beacon effects with diminishing returns
@@ -184,8 +205,13 @@ function calculateEffectiveStats(
     
     for (const beacon of beacons) {
       for (const module of beacon.modules) {
-        beaconSpeedBonus += module.effects.speed ?? 0;
-        beaconProdBonus += module.effects.productivity ?? 0;
+        // Apply same filtering rules for beacon modules
+        if (allowsSpeed && module.effects.speed !== undefined) {
+          beaconSpeedBonus += module.effects.speed;
+        }
+        if (allowsProductivity && module.effects.productivity !== undefined) {
+          beaconProdBonus += module.effects.productivity;
+        }
       }
     }
     
@@ -478,7 +504,8 @@ export class BlueprintAnalyzer {
       const { speed, productivity } = calculateEffectiveStats(
         machineDef,
         modules,
-        affectingBeacons
+        affectingBeacons,
+        recipe
       );
 
       this.machines.set(entity.entity_number, {
