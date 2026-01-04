@@ -9,10 +9,11 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { decodeBlueprint, extractBlueprints } from "./decoder.js";
 import { BlueprintAnalyzer, formatAnalysisResult } from "./analyzer.js";
+import { VERSION } from "./version.js";
 
 function printUsage(): void {
   console.log(`
-Factorio Blueprint Investigator (FBI)
+Factorio Blueprint Investigator (FBI) v${VERSION}
 =====================================
 
 Usage: fbi <blueprint-file>
