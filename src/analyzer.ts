@@ -207,6 +207,10 @@ function calculateEffectiveStats(
  * In Factorio, the direction indicates where the inserter picks FROM.
  * The inserter drops on the OPPOSITE side from the pickup direction.
  * Direction: 0=North, 4=East, 8=South, 12=West
+ * 
+ * Coordinate system: Factorio uses screen coordinates where Y increases downward (South).
+ * So North = -Y, South = +Y, East = +X, West = -X.
+ * 
  * Note: This assumes standard inserter reach of 1 tile. Long-handed inserters
  * have a reach of 2 tiles but are rarely used with filters, so we use 1 tile
  * as a reasonable default that works for most cases.
