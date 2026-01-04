@@ -8,6 +8,7 @@
     "fbi": "./dist/index.js"
   },
   "scripts": {
+    "prebuild": "node prebuild.mjs",
     "build": "tsc",
     "build:web": "node build-web.mjs",
     "start": "node dist/index.js",

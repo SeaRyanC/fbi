@@ -9,11 +9,11 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { decodeBlueprint, extractBlueprints } from "./decoder.js";
 import { BlueprintAnalyzer, formatAnalysisResult } from "./analyzer.js";
-import { VERSION } from "./version.js";
+import { BUILD_NUMBER } from "./version.js";
 
 function printUsage(): void {
   console.log(`
-Factorio Blueprint Investigator (FBI) v${VERSION}
+Factorio Blueprint Investigator (FBI) Build #${BUILD_NUMBER}
 =====================================
 
 Usage: fbi <blueprint-file>
