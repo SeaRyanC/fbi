@@ -5,8 +5,8 @@ Processing 1 blueprint(s)...
 Analyzed /home/runner/work/fbi/fbi/tests/emsci2.txt
 
 Inputs
- 4.3/s Holmium Ore
- 3.1/s Stone
+ 5.0/s Holmium Ore
+ 3.4/s Stone
 24.5/s Heavy Oil
  2.5/s Battery
  1.3/s Electronic Circuit
@@ -26,6 +26,6 @@ Utilization:
  Electromagnetic Plant (Accumulator) x1: 84%
  Electromagnetic Plant (Superconductor) x1: 41%
  Chemical Plant (Ice Melting) x2: 31%
- Foundry (Holmium Plate) x1: 9%
+ Foundry (Holmium Plate) x1: 14%
  Chemical Plant (Heavy Oil Cracking) x1: 3%
 —
