@@ -549,6 +549,20 @@ export class BlueprintAnalyzer {
     }
   }
 
+  /**
+   * Returns a set of all items that are consumed by any machine in the blueprint
+   */
+  private getInternallyConsumedItems(): Set<string> {
+    const consumedItems = new Set<string>();
+    for (const [, machine] of this.machines) {
+      if (!machine.recipe) continue;
+      for (const [item] of machine.inputRates) {
+        consumedItems.add(item);
+      }
+    }
+    return consumedItems;
+  }
+
   private resolveBottlenecks(): void {
     // The correct approach: Work backwards from final outputs
     // 1. Final output machines run at 100% (unless supply-limited)
@@ -677,13 +691,7 @@ export class BlueprintAnalyzer {
     );
 
     // Identify which items are consumed internally by any machine
-    const internallyConsumedItems = new Set<string>();
-    for (const [, machine] of this.machines) {
-      if (!machine.recipe) continue;
-      for (const [item] of machine.inputRates) {
-        internallyConsumedItems.add(item);
-      }
-    }
+    const internallyConsumedItems = this.getInternallyConsumedItems();
 
     for (const [item, flow] of this.itemFlows) {
       // Apply utilization to flows
