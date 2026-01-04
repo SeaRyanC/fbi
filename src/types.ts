@@ -185,6 +185,23 @@ export interface ItemFlow {
   sinks: number[];
 }
 
+/**
+ * Represents a problem detected during blueprint analysis.
+ */
+export type ProblemType = 
+  | "unknown-recipe"      // Recipe name exists in blueprint but not in game data
+  | "no-recipe"           // Machine has no recipe and none could be inferred
+  | "missing-input";      // Machine appears to be missing a necessary input
+
+export interface Problem {
+  type: ProblemType;
+  message: string;
+  entityNumber?: number;
+  machineName?: string;
+  recipeName?: string;
+  itemName?: string;
+}
+
 export interface AnalysisResult {
   filename: string;
   blueprintName?: string;
@@ -192,4 +209,5 @@ export interface AnalysisResult {
   externalOutputs: Map<string, number>;
   machines: AnalyzedMachine[];
   utilization: Map<string, { count: number; avgUtilization: number }>;
+  problems: Problem[];
 }
