@@ -175,20 +175,23 @@ function calculateEffectiveStats(
   let productivityBonus = machine.baseProductivity;
 
   // Check if machine allows speed effect
-  const allowsSpeed = machine.allowedEffects.includes("speed");
-  // Check if machine allows productivity and recipe allows productivity
-  const allowsProductivity = machine.allowedEffects.includes("productivity") && 
-                             (recipe?.allowProductivity ?? false);
+  const machineAllowsSpeed = machine.allowedEffects.includes("speed");
+  // Check if machine allows productivity effect
+  const machineAllowsProductivity = machine.allowedEffects.includes("productivity");
+  // Check if recipe allows productivity bonus
+  const recipeAllowsProductivity = recipe?.allowProductivity ?? false;
+  // Productivity bonus requires both machine and recipe to allow it
+  const canApplyProductivity = machineAllowsProductivity && recipeAllowsProductivity;
 
   // Apply internal modules
   for (const module of modules) {
-    // Speed effects (including negative speed from productivity modules) are always applied
-    // if the machine allows speed effects
-    if (allowsSpeed && module.effects.speed !== undefined) {
+    // Speed effects (including negative speed from productivity modules) apply
+    // only if the machine allows speed effects
+    if (machineAllowsSpeed && module.effects.speed !== undefined) {
       speedBonus += module.effects.speed;
     }
     // Productivity bonus only applies if both machine and recipe allow it
-    if (allowsProductivity && module.effects.productivity !== undefined) {
+    if (canApplyProductivity && module.effects.productivity !== undefined) {
       productivityBonus += module.effects.productivity;
     }
   }
@@ -206,10 +209,10 @@ function calculateEffectiveStats(
     for (const beacon of beacons) {
       for (const module of beacon.modules) {
         // Apply same filtering rules for beacon modules
-        if (allowsSpeed && module.effects.speed !== undefined) {
+        if (machineAllowsSpeed && module.effects.speed !== undefined) {
           beaconSpeedBonus += module.effects.speed;
         }
-        if (allowsProductivity && module.effects.productivity !== undefined) {
+        if (canApplyProductivity && module.effects.productivity !== undefined) {
           beaconProdBonus += module.effects.productivity;
         }
       }
