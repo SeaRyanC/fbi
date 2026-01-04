@@ -120,6 +120,9 @@ if (failures.length > 0) {
           if (error.stdout.split("\n").length > 30) {
             console.log("    ... (diff truncated)");
           }
+        } else if (error.code === 127 || error.message.includes("ENOENT")) {
+          // diff command not found
+          console.log("\n  (diff command not available - compare files manually)");
         }
       }
     }
