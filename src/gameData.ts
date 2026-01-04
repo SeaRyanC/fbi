@@ -473,6 +473,22 @@ export const RECIPES: Map<string, Recipe> = new Map([
       allowProductivity: true,
     },
   ],
+  [
+    "casting-low-density-structure",
+    {
+      name: "Casting Low Density Structure",
+      internalName: "casting-low-density-structure",
+      craftingTime: 20,
+      ingredients: [
+        { name: "molten-iron", amount: 60, type: "fluid" },
+        { name: "molten-copper", amount: 200, type: "fluid" },
+        { name: "plastic-bar", amount: 5, type: "item" },
+      ],
+      products: [{ name: "low-density-structure", amount: 1, type: "item" }],
+      category: "metallurgy",
+      allowProductivity: true,
+    },
+  ],
   // More basic recipes
   [
     "copper-cable",
