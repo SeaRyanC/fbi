@@ -1950,7 +1950,7 @@ export const RECIPES: Map<string, Recipe> = new Map([
     {
       name: "Holmium Solution",
       internalName: "holmium-solution",
-      craftingTime: 1,
+      craftingTime: 5,
       ingredients: [
         { name: "holmium-ore", amount: 1, type: "item" },
         { name: "water", amount: 50, type: "fluid" },

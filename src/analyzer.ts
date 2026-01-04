@@ -677,6 +677,205 @@ export class BlueprintAnalyzer {
     }
   }
 
+  /**
+   * Checks if an entity is a pipe or pipe-related entity
+   */
+  private isPipeEntity(entityName: string): boolean {
+    return entityName === 'pipe' || entityName === 'pipe-to-ground';
+  }
+
+  /**
+   * Cached result of pipe network analysis to avoid recomputing
+   */
+  private pipeNetworkExternal: boolean | null = null;
+
+  /**
+   * Analyzes the entire pipe network topology to determine if there are external connections.
+   * Returns true if there are 3+ dead-end pipes or an unconnected pipe-to-ground.
+   */
+  private analyzePipeNetworkTopology(): boolean {
+    if (this.pipeNetworkExternal !== null) {
+      return this.pipeNetworkExternal;
+    }
+    
+    // Find all pipe entities
+    const pipeEntities = this.blueprint.entities.filter(e => 
+      this.isPipeEntity(e.name)
+    );
+    
+    if (pipeEntities.length === 0) {
+      // No pipes means fluids go directly between machines - consider internal
+      this.pipeNetworkExternal = false;
+      return false;
+    }
+    
+    // Count pipe-to-grounds
+    const pipeToGrounds = this.blueprint.entities.filter(e => 
+      e.name === 'pipe-to-ground'
+    );
+    
+    // A pipe-to-ground is unconnected if there's only 1 total (no pair)
+    if (pipeToGrounds.length === 1) {
+      this.pipeNetworkExternal = true;
+      return true;
+    }
+    
+    // Build a graph of pipe connections
+    const pipeGraph = new Map<number, Set<number>>();
+    for (const pipe of pipeEntities) {
+      pipeGraph.set(pipe.entity_number, new Set());
+    }
+    
+    for (let i = 0; i < pipeEntities.length; i++) {
+      for (let j = i + 1; j < pipeEntities.length; j++) {
+        const p1 = pipeEntities[i];
+        const p2 = pipeEntities[j];
+        if (!p1 || !p2) continue;
+        
+        const dist = distance(p1.position, p2.position);
+        
+        // Pipes connect if they're within 1.5 tiles
+        if (dist <= 1.5) {
+          pipeGraph.get(p1.entity_number)!.add(p2.entity_number);
+          pipeGraph.get(p2.entity_number)!.add(p1.entity_number);
+        }
+      }
+    }
+    
+    // Connect pipes to ALL machines (not just specific fluid)
+    for (const pipe of pipeEntities) {
+      for (const [machineNum, machine] of this.machines) {
+        const machineEntity = this.blueprint.entities.find(e => e.entity_number === machineNum);
+        if (!machineEntity) continue;
+        
+        const machineDef = getMachine(machineEntity.name);
+        if (!machineDef) continue;
+        
+        const dist = distance(pipe.position, machine.position);
+        const halfDiagonal = Math.sqrt(
+          (machineDef.size.width / 2) ** 2 + (machineDef.size.height / 2) ** 2
+        );
+        const machineRadius = halfDiagonal + 1.5;
+        
+        if (dist <= machineRadius) {
+          pipeGraph.get(pipe.entity_number)!.add(-machineNum);
+        }
+      }
+    }
+    
+    // Count "dead-end" pipes
+    let deadEndCount = 0;
+    for (const [pipeNum, connections] of pipeGraph) {
+      const hasMachineConnection = Array.from(connections).some(c => c < 0);
+      if (!hasMachineConnection && connections.size <= 1) {
+        deadEndCount++;
+      }
+    }
+    
+    this.pipeNetworkExternal = deadEndCount >= 3;
+    return this.pipeNetworkExternal;
+  }
+
+  /**
+   * Analyzes pipe topology to determine if a fluid has external connections.
+   */
+  private hasExternalPipeConnections(fluidName: string): boolean {
+    // Find all machines that produce or consume this fluid
+    const machinesWithFluid = new Set<number>();
+    for (const [entityNum, machine] of this.machines) {
+      if (!machine.recipe) continue;
+      
+      for (const ingredient of machine.recipe.ingredients) {
+        if (ingredient.type === 'fluid' && ingredient.name === fluidName) {
+          machinesWithFluid.add(entityNum);
+        }
+      }
+      
+      for (const product of machine.recipe.products) {
+        if (product.type === 'fluid' && product.name === fluidName) {
+          machinesWithFluid.add(entityNum);
+        }
+      }
+    }
+    
+    if (machinesWithFluid.size === 0) return false;
+    
+    // Use the overall pipe network analysis
+    return this.analyzePipeNetworkTopology();
+  }
+
+  /**
+   * Checks if an item is only output to other machines (not to external destinations).
+   * This is determined by checking if all output inserters from machines producing this item
+   * drop directly into other machines.
+   */
+  private isOnlyOutputToMachines(itemName: string): boolean {
+    // Find all machines that produce this item
+    const producers = new Set<number>();
+    for (const [entityNum, machine] of this.machines) {
+      if (!machine.recipe) continue;
+      
+      for (const product of machine.recipe.products) {
+        if (product.type === 'item' && product.name === itemName) {
+          producers.add(entityNum);
+        }
+      }
+    }
+    
+    if (producers.size === 0) return false;
+    
+    // Find all inserters
+    const inserters = this.blueprint.entities.filter(e => isInserter(e.name));
+    
+    // For each producer, check if all output inserters go to machines
+    for (const producerNum of producers) {
+      const producer = this.machines.get(producerNum);
+      if (!producer) continue;
+      
+      const producerEntity = this.blueprint.entities.find(e => e.entity_number === producerNum);
+      if (!producerEntity) continue;
+      
+      // Find inserters that pick from this machine
+      const outputInserters = inserters.filter(inserter => {
+        const pickupPos = getInserterPickupPosition(inserter);
+        const machineDef = getMachine(producerEntity.name);
+        return machineDef && isPositionInMachine(pickupPos, producer.position, machineDef.size);
+      });
+      
+      if (outputInserters.length === 0) {
+        // No inserters taking from this machine - might be using belts or bots
+        // We can't determine, so assume it's external
+        return false;
+      }
+      
+      // Check if all output inserters drop into machines
+      for (const inserter of outputInserters) {
+        const dropPos = getInserterDropPosition(inserter);
+        
+        // Check if drop position is inside any machine
+        let dropsToMachine = false;
+        for (const [, machine] of this.machines) {
+          const machineEntity = this.blueprint.entities.find(e => e.entity_number === machine.entityNumber);
+          if (!machineEntity) continue;
+          
+          const machineDef = getMachine(machineEntity.name);
+          if (machineDef && isPositionInMachine(dropPos, machine.position, machineDef.size)) {
+            dropsToMachine = true;
+            break;
+          }
+        }
+        
+        if (!dropsToMachine) {
+          // This inserter drops to something else (chest, belt, etc.)
+          return false;
+        }
+      }
+    }
+    
+    // All output inserters from all producers go to machines
+    return true;
+  }
+
   private identifyExternalFlows(): {
     inputs: Map<string, number>;
     outputs: Map<string, number>;
@@ -699,14 +898,52 @@ export class BlueprintAnalyzer {
       const adjustedProduced = flow.produced;
       const netFlow = adjustedProduced - adjustedConsumed;
 
+      // Determine if this is a fluid or item
+      let isFluid = false;
+      for (const [, machine] of this.machines) {
+        if (!machine.recipe) continue;
+        
+        for (const ingredient of machine.recipe.ingredients) {
+          if (ingredient.name === item && ingredient.type === 'fluid') {
+            isFluid = true;
+            break;
+          }
+        }
+        
+        for (const product of machine.recipe.products) {
+          if (product.name === item && product.type === 'fluid') {
+            isFluid = true;
+            break;
+          }
+        }
+        
+        if (isFluid) break;
+      }
+
       // Only report flows that exceed the threshold to avoid floating-point noise
       if (netFlow < -EXTERNAL_FLOW_THRESHOLD) {
         // Net consumption - this is an external input
         inputs.set(item, -netFlow);
       } else if (netFlow > EXTERNAL_FLOW_THRESHOLD) {
-        // Net production - only count as external output if NOT consumed internally
-        if (!internallyConsumedItems.has(item)) {
-          outputs.set(item, netFlow);
+        // Net production - check if it's truly external
+        
+        // Skip if consumed internally
+        if (internallyConsumedItems.has(item)) {
+          continue;
+        }
+        
+        // For fluids, check pipe topology
+        if (isFluid) {
+          if (this.hasExternalPipeConnections(item)) {
+            outputs.set(item, netFlow);
+          }
+          // If no external pipe connections, it's internal piping - don't report
+        } else {
+          // For items, check if only output to machines
+          if (!this.isOnlyOutputToMachines(item)) {
+            outputs.set(item, netFlow);
+          }
+          // If only output to machines, it's an intermediate - don't report
         }
       }
       // Items with |netFlow| <= threshold are considered balanced and not reported
