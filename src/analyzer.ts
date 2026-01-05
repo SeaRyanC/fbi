@@ -154,34 +154,23 @@ function extractModules(entity: BlueprintEntity): Module[] {
  * Calculates effective speed and productivity for a machine
  * Considers internal modules and beacon effects
  * Beacon effects use diminishing returns: total effect is divided by sqrt(n) where n is number of beacons
- * Productivity bonuses are only applied if the recipe allows productivity
  */
 function calculateEffectiveStats(
   machine: ReturnType<typeof getMachine>,
   modules: Module[],
-  beacons: AnalyzedBeacon[],
-  recipe: Recipe | null
+  beacons: AnalyzedBeacon[]
 ): { speed: number; productivity: number } {
   if (!machine) {
     return { speed: 1, productivity: 1 };
   }
 
   let speedBonus = 0;
-  let productivityBonus = 0;
-
-  // Only apply productivity bonuses if the recipe allows it
-  const allowsProductivity = recipe?.allowProductivity ?? true;
-  
-  if (allowsProductivity) {
-    productivityBonus = machine.baseProductivity;
-  }
+  let productivityBonus = machine.baseProductivity;
 
   // Apply internal modules
   for (const module of modules) {
     speedBonus += module.effects.speed ?? 0;
-    if (allowsProductivity) {
-      productivityBonus += module.effects.productivity ?? 0;
-    }
+    productivityBonus += module.effects.productivity ?? 0;
   }
 
   // Apply beacon effects with diminishing returns
@@ -197,17 +186,13 @@ function calculateEffectiveStats(
     for (const beacon of beacons) {
       for (const module of beacon.modules) {
         beaconSpeedBonus += module.effects.speed ?? 0;
-        if (allowsProductivity) {
-          beaconProdBonus += module.effects.productivity ?? 0;
-        }
+        beaconProdBonus += module.effects.productivity ?? 0;
       }
     }
     
     // Apply transmission efficiency and diminishing returns
     speedBonus += beaconSpeedBonus * transmissionEff * diminishingFactor;
-    if (allowsProductivity) {
-      productivityBonus += beaconProdBonus * transmissionEff * diminishingFactor;
-    }
+    productivityBonus += beaconProdBonus * transmissionEff * diminishingFactor;
   }
 
   // Speed cannot go below 20%
@@ -529,8 +514,7 @@ export class BlueprintAnalyzer {
       const { speed, productivity } = calculateEffectiveStats(
         machineDef,
         modules,
-        affectingBeacons,
-        recipe
+        affectingBeacons
       );
 
       this.machines.set(entity.entity_number, {
