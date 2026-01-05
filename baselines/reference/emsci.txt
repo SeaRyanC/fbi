@@ -6,26 +6,26 @@ Analyzed /home/runner/work/fbi/fbi/tests/emsci.txt
 
 Inputs
 1.7/s Holmium Ore
-1.2/s Stone
-9.0/s Heavy Oil
-2.5/s Battery
-1.3/s Electronic Circuit
+1.1/s Stone
+8.6/s Heavy Oil
+3.4/s Battery
+1.2/s Electronic Circuit
 0.5/s Ice
 0.2/s Copper Plate
 0.2/s Plastic Bar
-1.0/s Iron Plate
+1.4/s Iron Plate
 
 Outputs
-1.3/s Electromagnetic Science Pack
+1.2/s Electromagnetic Science Pack
 
 Utilization:
- Electromagnetic Plant (Electromagnetic Science Pack) x1: 100%
- Electromagnetic Plant (Supercapacitor) x1: 93%
- Electromagnetic Plant (Accumulator) x1: 69%
- Chemical Plant (Holmium Solution) x1: 47%
- Electromagnetic Plant (Electrolyte) x1: 34%
- Electromagnetic Plant (Superconductor) x1: 23%
+ Electromagnetic Plant (Accumulator) x1: 100%
+ Electromagnetic Plant (Electromagnetic Science Pack) x1: 96%
+ Electromagnetic Plant (Supercapacitor) x1: 89%
+ Chemical Plant (Holmium Solution) x1: 45%
+ Electromagnetic Plant (Electrolyte) x1: 33%
+ Electromagnetic Plant (Superconductor) x1: 22%
  Chemical Plant (Ice Melting) x2: 12%
- Foundry (Holmium Plate) x1: 5%
+ Foundry (Holmium Plate) x1: 4%
  Chemical Plant (Heavy Oil Cracking) x1: 2%
 —
